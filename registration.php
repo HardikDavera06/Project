@@ -12,87 +12,68 @@
 
 <?php
 session_start();
-include 'config.php';
-include 'nav.php';
+require_once 'config.php';
+require_once 'nav.php';
+require_once './assets/showMessage.php';
 $inN = false;
 $admin_name = '';
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (isset($_POST['add_employe'])) {  //* <---- Check Admin Is LoggedIn/Registered Or Not ---->
-        if (isset($_SESSION['admin_register']) || isset($_SESSION['admin_login'])) {
-            if (isset($_SESSION['admin_name']))
+    if (isset($_POST['add_employe'])) {
+        if (isset($_SESSION['admin_login'])) { //* <---- Check Admin Is LoggedIn Or Not ---->
+            if (isset($_SESSION['admin_name'])) {
                 $admin_name = $_SESSION['admin_name'];
-            $eName = trim($_POST['unm']);
-            $password = $_POST['pwd'];
-            $Jdate = $_POST['jd'];
-            $depart = $_POST['dep'];
-            $package = trim($_POST['package']);
+                $eName = trim($_POST['unm']);
+                $password = $_POST['pwd'];
+                $Jdate = $_POST['jd'];
+                $depart = $_POST['dep'];
+                $package = trim($_POST['package']);
 
-            //* <---- FOR CHECK DUPLICATE EMPLOYE ---->
-            $select = "SELECT * FROM `_emp_regi` where `Ename`='$eName' AND `password`='$password' AND `admin`='$admin_name'";
-            $run = mysqli_query($con, $select);
-            $NumExitscheck = mysqli_num_rows($run);
-            if ($NumExitscheck == 1) {
+                //* <---- FOR CHECK DUPLICATE EMPLOYE ---->
+                $select = "SELECT * FROM `_emp_regi` where `Ename`='$eName' AND `password`='$password' AND `admin`='$admin_name'";
+                $run = mysqli_query($con, $select);
+                $NumExitscheck = mysqli_num_rows($run);
+                if ($NumExitscheck == 1) {
+                    ShowError('Employe Already Existed', 'Admin!');
+                } else {
+                    //* <------ INSERT NEW EMPLOYES ------>
+                    $insert = "INSERT INTO `_emp_regi`(`Ename`, `password`, `Jdate`, `dep`, `package`,`admin`) VALUES ('$eName','$password','$Jdate','$depart','$package','$admin_name')";
+                    $Run = mysqli_query($con, $insert);
+                    $inN = true;
+                    if (!$Run)
+                        die("Not Working" . mysqli_error($con));
+                    if ($inN == true) {
 ?>
-                <script type="text/javascript">
-                    $(document).ready(function() {
-                        toastr.options = {
-                            "closeButton": true,
-                            "debug": false,
-                            "newestOnTop": true,
-                            "preventDuplicates": true,
-                            "onclick": null,
-                            "showDuration": "100",
-                            "hideDuration": "1000",
-                            "timeOut": "5000",
-                            "extendedTimeOut": "1000",
-                            "showEasing": "swing",
-                            "hideEasing": "linear",
-                            "showMethod": "show",
-                            "hideMethod": "hide"
-                        }
-                        toastr.error('Employe Already Existed', 'Admin!');
-                    });
-                </script>
+                        <script type="text/javascript">
+                            $(document).ready(function() {
+                                toastr.options = {
+                                    "closeButton": true,
+                                    "debug": false,
+                                    "newestOnTop": true,
+                                    "preventDuplicates": true,
+                                    "onclick": null,
+                                    "showDuration": "100",
+                                    "hideDuration": "1000",
+                                    "timeOut": "5000",
+                                    "extendedTimeOut": "1000",
+                                    "showEasing": "swing",
+                                    "hideEasing": "linear",
+                                    "showMethod": "show",
+                                    "hideMethod": "hide"
+                                }
+                                toastr.success('Employe Registerd Successfully', 'Admin!');
+                            });
+                        </script>
                 <?php
-            } else {
-                //* <------ INSERT NEW EMPLOYES ------>
-                $insert = "INSERT INTO `_emp_regi`(`Ename`, `password`, `Jdate`, `dep`, `package`,`admin`) VALUES ('$eName','$password','$Jdate','$depart','$package','$admin_name')";
-                $Run = mysqli_query($con, $insert);
-                $inN = true;
-                if (!$Run)
-                    die("Not Working" . mysqli_error($con));
-                if ($inN == true) {
-                ?>
-                    <script type="text/javascript">
-                        $(document).ready(function() {
-                            toastr.options = {
-                                "closeButton": true,
-                                "debug": false,
-                                "newestOnTop": true,
-                                "preventDuplicates": true,
-                                "onclick": null,
-                                "showDuration": "100",
-                                "hideDuration": "1000",
-                                "timeOut": "5000",
-                                "extendedTimeOut": "1000",
-                                "showEasing": "swing",
-                                "hideEasing": "linear",
-                                "showMethod": "show",
-                                "hideMethod": "hide"
-                            }
-                            toastr.success('Employe Registerd Successfully', 'Admin!');
-                        });
-                    </script>
-            <?php
+                    }
                 }
-            }
-        } else { //* <---- If Not Logged/Registered Then Redirect To Signin ----->
-            $_SESSION['redirect_for_false_crendentials'] = 0;
-            ?>
-            <script>
-                window.location = "adminSignin.php";
-            </script>
+            } else { //* <---- If Not Logged/Registered Then Redirect To Signin ----->
+                $_SESSION['redirect_for_false_crendentials'] = 0;
+                ?>
+                <script>
+                    window.location = "adminSignin.php";
+                </script>
 <?php
+            }
         }
     }
 }
@@ -121,8 +102,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <option value="Marketing">Marketing</option>
                 <option value="Sales">Sales</option>
                 <option value="Product">Product</option>
-                <option value="Management">Management</option>
-                <option value="Executive">Executive</option>
+                <option value="Executive">Human Resource</option>
+                <option value="Executive">Admin</option>
             </select>
 
             <label for="package" class="mt-3">&nbsp;Enter Package :</label>

@@ -1,6 +1,7 @@
 <?php
 session_start();
-include "nav.php";
+require_once "nav.php";
+require_once "./assets/showMessage.php";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -19,117 +20,24 @@ include "nav.php";
 
 <body>
    <?php
-   if (isset($_SESSION['redirect_for_false_crendentials'])) {
-      if ($_SESSION['redirect_for_false_crendentials'] == 0) //* <---- Display Message If Admin Without LoggedIn, Register The Employee ---->
-      {
-   ?>
-         <script>
-            $(document).ready(function() {
-               toastr.options = {
-                  "closeButton": true,
-                  "debug": false,
-                  "newestOnTop": true,
-                  "preventDuplicates": true,
-                  "onclick": null,
-                  "showDuration": "100",
-                  "hideDuration": "1000",
-                  "timeOut": "5000",
-                  "extendedTimeOut": "1000",
-                  "showEasing": "swing",
-                  "hideEasing": "linear",
-                  "showMethod": "show",
-                  "hideMethod": "hide",
-                  "positionclass": "toast-top-full-width"
-               }
-               toastr.info('Before SignIn, You can not register the employes', 'Sorry!');
-            });
-         </script>
-      <?php
-         $_SESSION['redirect_for_false_crendentials']++; //* Increase Number, Because This Message Show Only One Time At Page
-      }
-   }
    if (isset($_SESSION['redirect_for_without_login_feedback'])) {
-      if ($_SESSION['redirect_for_without_login_feedback'] == 0) //* Without Login Admin, Entered Feedbacks
+      if ($_SESSION['redirect_for_without_login_feedback'] == 0) //* Without Login User, Enter Feedbacks
       {
-      ?>
-         <script>
-            $(document).ready(function() {
-               toastr.options = {
-                  "closeButton": true,
-                  "debug": false,
-                  "newestOnTop": true,
-                  "preventDuplicates": true,
-                  "onclick": null,
-                  "showDuration": "100",
-                  "hideDuration": "1000",
-                  "timeOut": "5000",
-                  "extendedTimeOut": "1000",
-                  "showEasing": "swing",
-                  "hideEasing": "linear",
-                  "showMethod": "show",
-                  "hideMethod": "hide",
-                  "positionclass": "toast-top-full-width"
-               }
-               toastr.info('Before SignIn, You can not sent feedbacks', 'Sorry!');
-            });
-         </script>
-   <?php
-         $_SESSION['redirect_for_without_login_feedback']++; //* Increase Number, Because This Message Show Only One Time At Page
+         ShowError('Before SignIn, You can not sent feedbacks', 'Sorry!');
+         $_SESSION['redirect_for_without_login_feedback']++; //* Increase Number, Because This Message Show Only One Time on Page
       }
    }
    ?>
    <?php
    if (isset($_SESSION['admin_register'])) {
       if ($_SESSION['admin_register'] == 1) {
-   ?>
-         <script type="text/javascript">
-            $(document).ready(function() {
-               toastr.options = {
-                  "closeButton": true,
-                  "debug": false,
-                  "newestOnTop": true,
-                  "preventDuplicates": true,
-                  "onclick": null,
-                  "showDuration": "100",
-                  "hideDuration": "1000",
-                  "timeOut": "5000",
-                  "extendedTimeOut": "1000",
-                  "showEasing": "swing",
-                  "hideEasing": "linear",
-                  "showMethod": "show",
-                  "hideMethod": "hide"
-               }
-               toastr.success('New Admin Registered!', 'Successfully');
-            });
-         </script>
-      <?php
+         ShowSuccess('New Admin Registered!', 'Successfully');
          $_SESSION['admin_register']++;
       }
    }
    if (isset($_SESSION['admin_login'])) {
       if ($_SESSION['admin_login'] == 1) {
-      ?>
-         <script type="text/javascript">
-            $(document).ready(function() {
-               toastr.options = {
-                  "closeButton": true,
-                  "debug": false,
-                  "newestOnTop": true,
-                  "preventDuplicates": true,
-                  "onclick": null,
-                  "showDuration": "100",
-                  "hideDuration": "1000",
-                  "timeOut": "5000",
-                  "extendedTimeOut": "1000",
-                  "showEasing": "swing",
-                  "hideEasing": "linear",
-                  "showMethod": "show",
-                  "hideMethod": "hide"
-               }
-               toastr.success('Admin LoggedIn!', 'Successfully');
-            });
-         </script>
-   <?php
+         ShowSuccess('Admin LoggedIn!', 'Successfully');
          $_SESSION['admin_login']++;
       }
    }
