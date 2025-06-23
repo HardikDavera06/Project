@@ -31,9 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             header('location:index2.php');
         } else //* If Enter Wrong Password Display Error Message
         {
-?>
-
-<?php
+            ShowError("Wrong Password", "Sorrry!");
         }
     } else {
         $ShowErr = false;
