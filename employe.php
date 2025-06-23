@@ -15,7 +15,7 @@ $upN = false;
   <link rel="stylesheet" href="https://cdn.datatables.net/2.0.7/css/dataTables.dataTables.css" />
   <link rel="stylesheet" href="./css/employe.css" />
   <script src="./js/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js"></script>
+  <script src="./js/toastr.min.js"></script>
 </head>
 
 <body>
@@ -255,9 +255,7 @@ $upN = false;
     });
   </script>
 
-  <!--//* Include Footer -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" />
-
+  <link rel="stylesheet" href="./css/toastr.css" />
 </body>
 
 </html>

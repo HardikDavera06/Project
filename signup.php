@@ -1,7 +1,6 @@
 <?php
 session_start();
 $signup = false;
-$_SESSION['count_error'] = 0;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -13,7 +12,7 @@ $_SESSION['count_error'] = 0;
    <link rel="stylesheet" href="./css/signup.css">
    <link rel="stylesheet" href="./css/boot.css">
    <script src="./js/jquery.min.js"></script>
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js"></script>
+   <script src="./js/toastr.min.js"></script>
 </head>
 <?php
 require "config.php";
@@ -30,9 +29,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
    $run = mysqli_query($con, $selectQuery);
    $NumExistscheck = mysqli_num_rows($run);
    if ($NumExistscheck == 1) {
-?>
+      ?>
       <script type="text/javascript">
-         $(document).ready(function() {
+         $(document).ready(function () {
             toastr.options = {
                "closeButton": true,
                "debug": false,
@@ -67,9 +66,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['admin_name'] = $aname; //* Store The New Admin Name
          }
       } else {
-      ?>
+         ?>
          <script type="text/javascript">
-            $(document).ready(function() {
+            $(document).ready(function () {
                toastr.options = {
                   "closeButton": true,
                   "debug": false,
@@ -88,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                toastr.error('Passwords Do Not Match', 'ERROR!');
             });
          </script>
-<?php
+         <?php
       }
    }
 }
@@ -152,7 +151,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"></script>
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" />
+   <link rel="stylesheet" href="./css/toastr.css" />
    <script>
       let contact = document.querySelector("#contact");
       let regContact = /[^0-9]/g;
