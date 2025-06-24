@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./css/signin.css">
-    <link rel="stylesheet" href="./css/employe.css">
     <link rel="stylesheet" href="./css/boot.css">
+    <link rel="stylesheet" href="./css/employe.css">
     <script src="./js/jquery.min.js"></script>
     <script src="./js/toastr.min.js"></script>
     <title>EMPLOYE | ABOUT</title>
@@ -26,8 +26,10 @@
 
 <?php
 session_start();
-include "nav.php";
-include "config.php";
+require_once "nav.php";
+require_once "config.php";
+require_once "./assets/showMessage.php";
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_SESSION['admin_login']) || isset($_SESSION['admin_register'])) {
         if (isset($_SESSION['admin_name'])) { //*<---- If The Admin LoggedIn After Workout All Tasks ---->
@@ -37,30 +39,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $num = $_POST['con'];
             $insert = "INSERT INTO `contact_us`(`cu_name`, `cu_email`, `cu_number`,`admin`) VALUES ('$nm','$mail','$num','$admin_name')";
             $RUn = mysqli_query($con, $insert);
-            if (!$RUn) die("Could not" . mysqli_error($con));
-            if (isset($_POST['button'])) {
-?>
-                <script type="text/javascript">
-                    $(document).ready(function() {
-                        toastr.options = {
-                            "closeButton": true,
-                            "debug": false,
-                            "newestOnTop": true,
-                            "preventDuplicates": true,
-                            "onclick": null,
-                            "showDuration": "100",
-                            "hideDuration": "1000",
-                            "timeOut": "5000",
-                            "extendedTimeOut": "1000",
-                            "showEasing": "swing",
-                            "hideEasing": "linear",
-                            "showMethod": "show",
-                            "hideMethod": "hide"
-                        }
-                        toastr.success('Details Sended successfully', 'Admin!');
-                    });
-                </script>
-        <?php
+            if (mysqli_affected_rows($con) == 1) {
+                ShowSuccess('Details Sended successfully', 'Admin!');
             }
         }
     } else {
@@ -69,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <script>
             window.location = "index2.php";
         </script>
-<?php
+        <?php
     }
 }
 ?>
@@ -78,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div class="head-titles">
         <p>FEEL FREE TO CONTACT US |</p>
     </div>
-    <div class="wrapper mt-5" id="about_wrapper">
+    <div class="wrapper mt-2" id="about_wrapper">
         <div class="title" title="Contact us"> Details</div>
         <form action="about.php" method="post">
             <div class="field">
@@ -92,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
 
             <div class="field">
-                <input type="text" name="con" id="con" minlength="10" maxlength="10" class="pass"
+                <input type="text" name="con" id="aboutContact" minlength="10" maxlength="10" class="pass"
                     title="Enter contact no." required />
                 <label for="con">Contact no.</label>
             </div>
@@ -108,15 +88,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <script src="./js/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
-    </script>
+        </script>
     <link rel="stylesheet" href="./css/toastr.css" />
-    <script>
-        let contact = document.querySelector("#con");
-        let regContact = /[^0-9]/g;
-        contact.addEventListener("input", () => {
-            contact.value = contact.value.replace(regContact, "");
-        });
-    </script>
+    <script src="./js/script.js"></script>
 </body>
 
 </html>

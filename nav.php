@@ -1,5 +1,5 @@
 <?php
-include "config.php";
+require_once "config.php";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -25,11 +25,11 @@ include "config.php";
     }
     ?>
     <!--//* Modal For Display The Admin's Details -->
-    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModal" aria-hidden="true">
+    <div class="modal fade" id="navModal" tabindex="-1" aria-labelledby="navModal" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class=" modal-title fs-5 text-success" id="editModal">Admin Information</h1>
+                    <h1 class=" modal-title fs-5 text-success" id="navModal">Admin Information</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="dialog modal-body container">
@@ -57,7 +57,7 @@ include "config.php";
     </div>
 
     <nav class="nav-head sticky-top py-2 shadow-sm rounded navbar navbar-expand-lg w-100">
-        <div class=" container-fluid w-100">
+        <div class="container-fluid w-100">
             <a class="txt navbar-brand fw-semibold" href="index2.php">NexGen</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -70,8 +70,8 @@ include "config.php";
                         <a class="nav-link linkU" href="index2.php" aria-current="page">Home</a>
                     </li>
                     <?php
-                    if (isset($_SESSION['admin_login']) || isset($_SESSION['admin_register'])) { //* <-- If Admin LoggedIn Then Show Admin's Details -->
-                    ?>
+                    if (isset($_SESSION['admin_login'])) { //* <-- If Admin LoggedIn Then Show Admin's Details -->
+                        ?>
                         <li class="nav-item mx-2">
                             <a class="nav-link linkU" href="registration.php" aria-current="page">Registration</a>
                         </li>
@@ -84,20 +84,20 @@ include "config.php";
                     </li>
                 </ul>
                 <?php
-                if (isset($_SESSION['admin_login']) || isset($_SESSION['admin_register'])) { //* <-- If Admin LoggedIn Then Show Admin's Details -->
-                ?>
+                if (isset($_SESSION['admin_login'])) { //* <-- If Admin LoggedIn Then Show Admin's Details -->
+                    ?>
                     <div class="mx-2 user-profile">
-                        <div class="users name">
+                        <div class="navUsers name">
                             <span><?php echo $admin_name; ?></span>
                             <span>Admin</span>
                         </div>
                         <div>
-                            <i class=" users fa-sharp fa-solid fa-circle-user fa-2xl" style="color: #7e22ce;"></i>
+                            <i class="navUsers fa-sharp fa-solid fa-circle-user fa-2xl" style="color: #7e22ce;"></i>
                         </div>
                     </div>
-                <?php
+                    <?php
                 } else { //* <--- If Not Login, Show The Login/Register Buttons ---->
-                ?>
+                    ?>
                     <div class="login-register">
                         <a href="adminSignin.php" class="login-nav-btn btn">Admin LogIn</a>
                         <a href="empSignin.php" class="regi-nav-btn btn ">Employe LogIn</a>
@@ -107,15 +107,7 @@ include "config.php";
         </div>
     </nav>
 
-    <script>
-        users = document.getElementsByClassName('users');
-        Array.from(users).forEach((e) => {
-            e.addEventListener("click", (h) => {
-                $("#editModal").modal("toggle");
-            });
-        });
-    </script>
-
+    <script src="./js/script.js"></script>
 </body>
 
 </html>

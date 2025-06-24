@@ -4,7 +4,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Poppins', Arial, Helvetica, sans-serif;
+  font-family: "Poppins", Arial, Helvetica, sans-serif;
 }
 
 html,
@@ -47,7 +47,7 @@ body {
   letter-spacing: 6px;
   color: #fff;
   user-select: none;
-  border-radius: 49PX 49px 0 0;
+  border-radius: 49px 49px 0 0;
   background: linear-gradient(-135deg, #c850c0, #4158d0);
 }
 
@@ -98,8 +98,8 @@ form .field input:valid {
   transition: all 0.3s ease;
 }
 
-form .field input:focus~label,
-form .field input:valid~label {
+form .field input:focus ~ label,
+form .field input:valid ~ label {
   top: 0%;
   font-size: 16px;
   color: #4158d0;

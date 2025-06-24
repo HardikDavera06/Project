@@ -1,6 +1,7 @@
 <?php
-require "config.php";
 session_start();
+require_once "config.php";
+require_once "./assets/showMessage.php";
 $ShowErr = true;
 ?>
 <!DOCTYPE html>
@@ -15,6 +16,7 @@ $ShowErr = true;
     <script src="./js/jquery.min.js"></script>
     <script src="./js/toastr.min.js"></script>
 </head>
+
 <?php
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $userName = $_POST['Anm'];
@@ -30,33 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             header('location:index2.php');
         } else //* If Enter Wrong Password Display Error Message
         {
-?>
-            <script>
-                $(document).ready(function() {
-                    toastr.options = {
-                        "closeButton": true,
-                        "debug": false,
-                        "newestOnTop": true,
-                        "preventDuplicates": true,
-                        "onclick": null,
-                        "showDuration": "100",
-                        "hideDuration": "1000",
-                        "timeOut": "5000",
-                        "extendedTimeOut": "1000",
-                        "showEasing": "swing",
-                        "hideEasing": "linear",
-                        "showMethod": "show",
-                        "hideMethod": "hide"
-                    }
-                    toastr.error('Invalid password', 'SORRY !');
-                });
-            </script>
-<?php
-            if (isset($_SESSION['count_error'])) {
-                $_SESSION['count_error']++; //* <---- Count The Limit Of False Entered Credentials ------>
-                if ($_SESSION['count_error'] >= 2)
-                    header('location:signup.php'); //* <---- Set The Limit For The Admin False Login ----->
-            }
+            ShowError('Invalid password', 'SORRY !');
         }
     } else {
         $ShowErr = false;
@@ -86,36 +62,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <?php
     if ($ShowErr == false) {
-        if (isset($_SESSION['count_error'])) {
-            if ($_SESSION['count_error'] >= 2) //* <--- If Admin's SignIn Limits Are Over Redirect To SignIN --->
-            {
-                $_SESSION['upto_count_error'] = 0; //* <-- For Display Error Message Only One Time --->
-                header('location:signup.php');
-            }
-            $_SESSION['count_error']++;
-        }
-    ?>
-        <script>
-            $(document).ready(function() {
-                toastr.options = {
-                    "closeButton": true,
-                    "debug": false,
-                    "newestOnTop": true,
-                    "preventDuplicates": true,
-                    "onclick": null,
-                    "showDuration": "100",
-                    "hideDuration": "1000",
-                    "timeOut": "5000",
-                    "extendedTimeOut": "1000",
-                    "showEasing": "swing",
-                    "hideEasing": "linear",
-                    "showMethod": "show",
-                    "hideMethod": "hide"
-                }
-                toastr.error('Invalid Credentials', 'OOPS!');
-            });
-        </script>
-    <?php } ?>
+        ShowError("Invalid Credentials", "Oops!");
+    } ?>
 
     <!-- //* CDN for toastr -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

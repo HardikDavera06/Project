@@ -1,33 +1,33 @@
- <!DOCTYPE html>
- <html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 
- <head>
-     <meta charset="UTF-8">
-     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <link rel="stylesheet" href="./css/employe.css">
-     <link rel="stylesheet" href="./css/boot.css">
-     <link rel="stylesheet" href=" https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-     <title>EMPLOYE | NAVBAR</title>
-     <style>
-     .title-ca {
-         color: #7e22ce;
-     }
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/employe.css">
+    <link rel="stylesheet" href="./css/boot.css">
+    <link rel="stylesheet" href=" https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <title>EMPLOYE | NAVBAR</title>
+    <style>
+        .title-ca {
+            color: #7e22ce;
+        }
 
-     .footer-b .icons a {
-         color: black;
-     }
+        .footer-b .icons a {
+            color: black;
+        }
 
-     .footer-b .icons i:hover {
-         color: #7e22ce;
-         transition: transform 3s ease;
-         transform: rotate(360deg);
+        .footer-b .icons i:hover {
+            color: #7e22ce;
+            transition: transform 3s ease;
+            transform: rotate(360deg);
 
-     }
-     </style>
- </head>
+        }
+    </style>
+</head>
 
- <body>
-     <footer class="mb-4 container mt-5 rounded navbar navbar-expand-lg w-100">
+<body>
+    <footer class="mb-4 container mt-5 rounded navbar navbar-expand-lg w-100">
         <div class="footer-b container-fluid mt-5 ">
             <a class="navbar-brand title-ca fw-semibold" href="index.php">NexGen</a>
             <div class="collapse navbar-collapse" id="footerContent ">
@@ -44,7 +44,7 @@
                 </div>
             </div>
         </div>
-     </footer>
- </body>
+    </footer>
+</body>
 
- </html>
+</html>

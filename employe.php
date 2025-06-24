@@ -1,7 +1,9 @@
 <?php
 session_start();
-require "nav.php";
-require "config.php";
+require_once "nav.php";
+require_once "config.php";
+require_once "./assets/showMessage.php";
+
 $Del = false;
 $upN = false;
 ?>
@@ -36,28 +38,7 @@ $upN = false;
         if ($RUn)
           $Del = true;
         if ($Del == true) {
-          ?>
-          <script type="text/javascript">
-            $(document).ready(function () {
-              toastr.options = {
-                "closeButton": true,
-                "debug": false,
-                "newestOnTop": true,
-                "preventDuplicates": true,
-                "onclick": null,
-                "showDuration": "100",
-                "hideDuration": "1000",
-                "timeOut": "5000",
-                "extendedTimeOut": "1000",
-                "showEasing": "swing",
-                "hideEasing": "linear",
-                "showMethod": "show",
-                "hideMethod": "hide"
-              }
-              toastr.success('Employe Deleted successfully', 'Admin!'); //*<--- Message For Performed Task Successfully ---->
-            });
-          </script>
-          <?php
+          ShowSuccess('Employe Deleted successfully', 'Admin!');
         }
       } else {
         if (isset($_POST['updateBtn'])) { //* <----- Script For Update The Employee -------> 
@@ -67,28 +48,7 @@ $upN = false;
           if (!$RUN)
             die("Not Working" . mysqli_error($con));
           if ($upN == true) {
-            ?>
-            <script type="text/javascript">
-              $(document).ready(function () {
-                toastr.options = {
-                  "closeButton": true,
-                  "debug": false,
-                  "newestOnTop": true,
-                  "preventDuplicates": true,
-                  "onclick": null,
-                  "showDuration": "100",
-                  "hideDuration": "1000",
-                  "timeOut": "5000",
-                  "extendedTimeOut": "1000",
-                  "showEasing": "swing",
-                  "hideEasing": "linear",
-                  "showMethod": "show",
-                  "hideMethod": "hide"
-                }
-                toastr.success('Information Updated successfully', 'Admin!'); //*<--- Message For Performed Task Successfully ---->
-              });
-            </script>
-            <?php
+            ShowSuccess('Information Updated successfully', 'Admin!');
           }
         }
       }
@@ -225,36 +185,7 @@ $upN = false;
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
     crossorigin="anonymous"></script>
   <script src="https://cdn.datatables.net/2.0.7/js/dataTables.js"></script>
-  <script>
-    //* dataTable jquery script */
-    $(document).ready(function () {
-      $("#myTable").DataTable();
-    });
-
-    //* <---- Edit feature ------> */
-    edits = document.getElementsByClassName("editData");
-    Array.from(edits).forEach((e) => {
-      e.addEventListener("click", (y) => {
-        tr = y.target.parentNode.parentNode;
-        name = tr.getElementsByTagName("td")[1].innerText;
-        password = tr.getElementsByTagName("td")[2].innerText;
-        jdate = tr.getElementsByTagName("td")[3].innerText;
-        depart = tr.getElementsByTagName("td")[4].innerText;
-        package = tr.getElementsByTagName("td")[5].innerText;
-        unm1.value = name;
-        pwd1.value = password;
-        jd1.value = jdate;
-        dep1.value = depart;
-        package1.value = package;
-        sno.value = y.target.id;
-        editID.value = y.target.id;
-        editDelete.value = y.target.id;
-        //* <---- toggle for open modal -----> */
-        $("#EDITmodal").modal("toggle");
-      });
-    });
-  </script>
-
+  <script src="./js/script.js"></script>
   <link rel="stylesheet" href="./css/toastr.css" />
 </body>
 

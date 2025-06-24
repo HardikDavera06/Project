@@ -1,5 +1,8 @@
 <?php
 session_start();
+require_once "config.php";
+require_once "./assets/showMessage.php";
+
 $signup = false;
 ?>
 <!DOCTYPE html>
@@ -15,7 +18,7 @@ $signup = false;
    <script src="./js/toastr.min.js"></script>
 </head>
 <?php
-require "config.php";
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
    $aname = trim($_POST['Anm']);
    $pwd = $_POST['pwd'];
@@ -29,28 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
    $run = mysqli_query($con, $selectQuery);
    $NumExistscheck = mysqli_num_rows($run);
    if ($NumExistscheck == 1) {
-      ?>
-      <script type="text/javascript">
-         $(document).ready(function () {
-            toastr.options = {
-               "closeButton": true,
-               "debug": false,
-               "newestOnTop": true,
-               "preventDuplicates": true,
-               "onclick": null,
-               "showDuration": "100",
-               "hideDuration": "1000",
-               "timeOut": "5000",
-               "extendedTimeOut": "1000",
-               "showEasing": "swing",
-               "hideEasing": "linear",
-               "showMethod": "show",
-               "hideMethod": "hide"
-            }
-            toastr.error('Admin Already Existed', 'OOPS!');
-         });
-      </script>
-      <?php
+      ShowError('Admin Already Existed', 'OOPS!');
    } else {
       // * <--- Insert New Admin -->
       if ($pwd == $rpwd) {
@@ -66,28 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['admin_name'] = $aname; //* Store The New Admin Name
          }
       } else {
-         ?>
-         <script type="text/javascript">
-            $(document).ready(function () {
-               toastr.options = {
-                  "closeButton": true,
-                  "debug": false,
-                  "newestOnTop": true,
-                  "preventDuplicates": true,
-                  "onclick": null,
-                  "showDuration": "100",
-                  "hideDuration": "1000",
-                  "timeOut": "5000",
-                  "extendedTimeOut": "1000",
-                  "showEasing": "swing",
-                  "hideEasing": "linear",
-                  "showMethod": "show",
-                  "hideMethod": "hide"
-               }
-               toastr.error('Passwords Do Not Match', 'ERROR!');
-            });
-         </script>
-         <?php
+         ShowError('Passwords Do Not Match', 'ERROR!');
       }
    }
 }
@@ -132,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
             <div class="col-md-9">
                <div class="field" title="Add contact">
-                  <input type="text" name="contact" id="contact" maxlength="10" id="contact" required>
+                  <input type="text" name="contact" id="signupContact" maxlength="10" id="contact" required>
                   <label for="contact">Contact Number</label>
                </div>
             </div>
@@ -152,13 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"></script>
    <link rel="stylesheet" href="./css/toastr.css" />
-   <script>
-      let contact = document.querySelector("#contact");
-      let regContact = /[^0-9]/g;
-      contact.addEventListener("input", () => {
-         contact.value = contact.value.replace(regContact, "");
-      });
-   </script>
+   <script src="./js/script.js"></script>
 </body>
 
 </html>

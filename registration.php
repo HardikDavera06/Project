@@ -15,6 +15,7 @@ session_start();
 require_once 'config.php';
 require_once 'nav.php';
 require_once './assets/showMessage.php';
+
 $inN = false;
 $admin_name = '';
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -42,37 +43,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     if (!$Run)
                         die("Not Working" . mysqli_error($con));
                     if ($inN == true) {
-?>
-                        <script type="text/javascript">
-                            $(document).ready(function() {
-                                toastr.options = {
-                                    "closeButton": true,
-                                    "debug": false,
-                                    "newestOnTop": true,
-                                    "preventDuplicates": true,
-                                    "onclick": null,
-                                    "showDuration": "100",
-                                    "hideDuration": "1000",
-                                    "timeOut": "5000",
-                                    "extendedTimeOut": "1000",
-                                    "showEasing": "swing",
-                                    "hideEasing": "linear",
-                                    "showMethod": "show",
-                                    "hideMethod": "hide"
-                                }
-                                toastr.success('Employe Registerd Successfully', 'Admin!');
-                            });
-                        </script>
-                <?php
+                        ShowSuccess('Employe Registerd Successfully', 'Admin!');
                     }
                 }
-            } else { //* <---- If Not Logged/Registered Then Redirect To Signin ----->
+            } else { //* <---- If Not Logged Then Redirect To Signin ----->
                 $_SESSION['redirect_for_false_crendentials'] = 0;
                 ?>
                 <script>
                     window.location = "adminSignin.php";
                 </script>
-<?php
+                <?php
             }
         }
     }
@@ -107,8 +87,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </select>
 
             <label for="package" class="mt-3">&nbsp;Enter Package :</label>
-            <input type="number" name="package" class="in form-control mt-1 p-2" maxlength="7" maxlength="4" id="package"
-                placeholder="Enter Package..." required>
+            <input type="number" name="package" class="in form-control mt-1 p-2" maxlength="7" maxlength="4"
+                id="package" placeholder="Enter Package..." required>
 
 
             <input type="submit" value="Add Employee" name="add_employe" class="addEmp btn fw-semibold mt-3 mb-5">
