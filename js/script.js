@@ -1,6 +1,12 @@
-let contact = document.querySelector("#aboutContact") ?? document.querySelector("#signupContact");
+let number = document.querySelector("#aboutContactNumber") ;
+let signupContact = document.querySelector("#signupContact");
 let regExContact = /[^0-9]/g;
-contact?.addEventListener("input", (e) => {
+
+number?.addEventListener("input", (e) => {
+  e.target.value = e.target.value.replace(regExContact, "");
+});
+
+signupContact?.addEventListener("input", (e) => {
   e.target.value = e.target.value.replace(regExContact, "");
 });
 
@@ -13,12 +19,10 @@ Array.from(edits)?.forEach((e) => {
     password = tr.getElementsByTagName("td")[2].innerText;
     jdate = tr.getElementsByTagName("td")[3].innerText;
     depart = tr.getElementsByTagName("td")[4].innerText;
-    package = tr.getElementsByTagName("td")[5].innerText;
     unm1.value = name;
     pwd1.value = password;
     jd1.value = jdate;
     dep1.value = depart;
-    package1.value = package;
     sno.value = y.target.id;
     editID.value = y.target.id;
     editDelete.value = y.target.id;

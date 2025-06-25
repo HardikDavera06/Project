@@ -28,7 +28,6 @@ $upN = false;
     $pass = $_POST['pwd1'];
     $date = $_POST['jd1'];
     $depa = $_POST['dep1'];
-    $pac = $_POST['package1'];
 
     if (isset($_POST['sno'])) {
       if (isset($_POST['delete'])) { //* <----- Script For Delete The Employee ------->
@@ -42,7 +41,7 @@ $upN = false;
         }
       } else {
         if (isset($_POST['updateBtn'])) { //* <----- Script For Update The Employee -------> 
-          $update = "UPDATE `_emp_regi` SET `Ename` = '$Name',`password` = '$pass',`Jdate` = '$date',`dep` = '$depa',`package` = '$pac' WHERE `_emp_regi`.`id` = '$sno'";
+          $update = "UPDATE `_emp_regi` SET `Ename` = '$Name',`password` = '$pass',`Jdate` = '$date',`dep` = '$depa' WHERE `_emp_regi`.`id` = '$sno'";
           $RUN = mysqli_query($con, $update);
           $upN = true;
           if (!$RUN)
@@ -82,12 +81,9 @@ $upN = false;
               <option value="Marketing">Marketing</option>
               <option value="Sales">Sales</option>
               <option value="Product">Product</option>
-              <option value="Management">Management</option>
-              <option value="Executive">Executive</option>
+              <option value="Human_Resource">Human Resource</option>
+              <option value="Admin">Admin</option>
             </select>
-
-            <label for="package1" class="mt-3 text-dark"> Package :</label>
-            <input type="text" name="package1" maxlength="7" maxlength="4" class="inp form-control" id="package1">
 
             <button name="updateBtn" class="update_Btn fw-semibold my-3 mx-2 px-4 btn-sm rounded-2" id="editID">
               Edit
@@ -114,31 +110,29 @@ $upN = false;
           <th>Password</th>
           <th>Joing Date</th>
           <th>Department</th>
-          <th>package</th>
           <th>Action</th>
         </tr>
       </thead>
       <tbody>
         <?php
         if (!isset($_SESSION['admin_name'])) {
-          ?>
-        <tr>
-          <td>1</td>
-          <td>employee</td>
-          <td>emp_pass</td>
-          <td>2020-00-00</td>
-          <td>emp_department</td>
-          <td>emp_package</td>
-          <td class="text-center">
-            <button class="update_Btn fw-semibold fw-3 px-3 btn-sm rounded-2" id="editID">
-              Edit
-            </button>
-            <button class="btn btn-danger btn-sm fw-3 rounded-2" id="editDelete" style="letter-spacing:1px;">
-              Delete
-            </button>
-          </td>
-        </tr>
-        <?php } else {
+        ?>
+          <tr>
+            <td>1</td>
+            <td>employee</td>
+            <td>emp_pass</td>
+            <td>2020-00-00</td>
+            <td>emp_department</td>
+            <td class="text-center">
+              <button class="update_Btn fw-semibold fw-3 px-3 btn-sm rounded-2" id="editID">
+                Edit
+              </button>
+              <button class="btn btn-danger btn-sm fw-3 rounded-2" id="editDelete" style="letter-spacing:1px;">
+                Delete
+              </button>
+            </td>
+          </tr>
+          <?php } else {
           $admin_name = $_SESSION['admin_name'];
           $select = "SELECT * FROM `_emp_regi` where `admin`='$admin_name'";
           $Run1 = mysqli_query($con, $select);
@@ -146,32 +140,29 @@ $upN = false;
             die("Not Working" . mysqli_error($con));
           $n = 1;
           while ($row = mysqli_fetch_assoc($Run1)) {
-            ?>
-        <tr>
-          <td>
-            <?php echo $n; ?>
-          </td>
-          <td>
-            <?php echo $row['Ename']; ?>
-          </td>
-          <td>
-            <?php echo $row['password']; ?>
-          </td>
-          <td>
-            <?php echo $row['Jdate']; ?>
-          </td>
-          <td>
-            <?php echo $row['dep']; ?>
-          </td>
-          <td>
-            <?php echo $row['package']; ?>
-          </td>
-          <td class="text-center">
-            <button class="editData btn" id="<?php echo $row['id']; ?>">Profile</button>
-          </td>
-        </tr>
+          ?>
+            <tr>
+              <td>
+                <?php echo $n; ?>
+              </td>
+              <td>
+                <?php echo $row['Ename']; ?>
+              </td>
+              <td>
+                <?php echo $row['password']; ?>
+              </td>
+              <td>
+                <?php echo $row['Jdate']; ?>
+              </td>
+              <td>
+                <?php echo $row['dep']; ?>
+              </td>
+              <td class="text-center">
+                <button class="editData btn" id="<?php echo $row['id']; ?>">Profile</button>
+              </td>
+            </tr>
         <?php
-        $n++;
+            $n++;
           }
         }
         ?>
@@ -185,8 +176,9 @@ $upN = false;
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
     crossorigin="anonymous"></script>
   <script src="https://cdn.datatables.net/2.0.7/js/dataTables.js"></script>
-  <script src="./js/script.js"></script>
   <link rel="stylesheet" href="./css/toastr.css" />
+  <script src="./js/script.js"></script>
+
 </body>
 
 </html>
