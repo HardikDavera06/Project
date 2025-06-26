@@ -27,7 +27,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $password = $_POST['pwd'];
                 $Jdate = $_POST['jd'];
                 $depart = $_POST['dep'];
-                $package = trim($_POST['package']);
 
                 //* <---- FOR CHECK DUPLICATE EMPLOYE ---->
                 $select = "SELECT * FROM `_emp_regi` where `Ename`='$eName' AND `password`='$password' AND `admin`='$admin_name'";
@@ -37,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     ShowError('Employe Already Existed', 'Admin!');
                 } else {
                     //* <------ INSERT NEW EMPLOYES ------>
-                    $insert = "INSERT INTO `_emp_regi`(`Ename`, `password`, `Jdate`, `dep`, `package`,`admin`) VALUES ('$eName','$password','$Jdate','$depart','$package','$admin_name')";
+                    $insert = "INSERT INTO `_emp_regi`(`Ename`, `password`, `Jdate`, `dep`,`admin`) VALUES ('$eName','$password','$Jdate','$depart','$admin_name')";
                     $Run = mysqli_query($con, $insert);
                     $inN = true;
                     if (!$Run)
@@ -48,11 +47,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 }
             } else { //* <---- If Not Logged Then Redirect To Signin ----->
                 $_SESSION['redirect_for_false_crendentials'] = 0;
-                ?>
+?>
                 <script>
                     window.location = "adminSignin.php";
                 </script>
-                <?php
+<?php
             }
         }
     }
@@ -82,14 +81,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <option value="Marketing">Marketing</option>
                 <option value="Sales">Sales</option>
                 <option value="Product">Product</option>
-                <option value="Executive">Human Resource</option>
-                <option value="Executive">Admin</option>
+                <option value="Human_Resource">Human Resource</option>
+                <option value="Admin">Admin</option>
             </select>
-
-            <label for="package" class="mt-3">&nbsp;Enter Package :</label>
-            <input type="number" name="package" class="in form-control mt-1 p-2" maxlength="7" maxlength="4"
-                id="package" placeholder="Enter Package..." required>
-
 
             <input type="submit" value="Add Employee" name="add_employe" class="addEmp btn fw-semibold mt-3 mb-5">
             <input type="reset" value="Clear" class="btn btn-sm btn-outline-dark fw-semibold btn-light mt-3 mb-5">
