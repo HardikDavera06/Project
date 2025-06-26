@@ -1,6 +1,12 @@
-let contact = document.querySelector("#aboutContact") ?? document.querySelector("#signupContact");
-let regExContact = /[^0-9]/g;
-contact?.addEventListener("input", (e) => {
+aboutcontact = document.querySelector("#aboutContact");
+signupContact = document.querySelector("#signupContact");
+regExContact = /[^0-9]/g;
+
+signupContact?.addEventListener("input", (e) => {
+  e.target.value = e.target.value.replace(regExContact, "");
+});
+
+aboutcontact?.addEventListener("input", (e) => {
   e.target.value = e.target.value.replace(regExContact, "");
 });
 
