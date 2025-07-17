@@ -17,7 +17,7 @@ require_once "config.php";
     <?php
     $admin_name = '';
     $select = '';
-    if (isset($_SESSION['admin_name'])) {
+    if (isset($_SESSION['admin_name']) ) {
         $admin_name = $_SESSION['admin_name'];
         $select = "SELECT * FROM `_admin_regi` WHERE `name`='$admin_name'";
         $select_query = $con->query($select);
@@ -89,18 +89,18 @@ require_once "config.php";
                     <div class="mx-2 user-profile">
                         <div class="navUsers name">
                             <span><?php echo $admin_name; ?></span>
-                            <span>Admin</span>
+                            <span><?php echo $_SESSION['designation']; ?></span>
                         </div>
                         <div>
                             <i class="navUsers fa-sharp fa-solid fa-circle-user fa-2xl" style="color: #7e22ce;"></i>
                         </div>
                     </div>
                     <?php
-                } else { //* <--- If Not Login, Show The Login/Register Buttons ---->
+                } else { //* <--- If Not Login, Show The Login Buttons ---->
                     ?>
                     <div class="login-register">
-                        <a href="adminSignin.php" class="login-nav-btn btn">Admin LogIn</a>
-                        <a href="empSignin.php" class="regi-nav-btn btn ">Employe LogIn</a>
+                        <a href="adminSignin.php" class="login-nav-btn btn">Admin Login</a>
+                        <a href="empSignin.php" class="regi-nav-btn btn ">Employe Login</a>
                     </div>
                 <?php } ?>
             </div>

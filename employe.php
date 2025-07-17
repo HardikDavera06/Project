@@ -1,5 +1,8 @@
 <?php
 session_start();
+if (!isset($_SESSION['admin_name'])) {
+  header("Location:index2.php");
+}
 require_once "nav.php";
 require_once "config.php";
 require_once "./assets/showMessage.php";
@@ -23,35 +26,56 @@ $upN = false;
 <body>
   <?php
   if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $sno = $_POST['sno'];
-    $Name = $_POST['unm1'];
-    $pass = $_POST['pwd1'];
-    $date = $_POST['jd1'];
-    $depa = $_POST['dep1'];
-
     if (isset($_POST['sno'])) {
-      if (isset($_POST['delete'])) { //* <----- Script For Delete The Employee ------->
-        $id = $_POST['delete'];
-        $delete = "DELETE FROM _emp_regi WHERE id = '$id'";
-        $RUn = mysqli_query($con, $delete);
-        if ($RUn)
-          $Del = true;
-        if ($Del == true) {
-          ShowSuccess('Employe Deleted successfully', 'Admin!');
-        }
-      } else {
-        if (isset($_POST['updateBtn'])) { //* <----- Script For Update The Employee -------> 
-          $update = "UPDATE `_emp_regi` SET `Ename` = '$Name',`password` = '$pass',`Jdate` = '$date',`dep` = '$depa' WHERE `_emp_regi`.`id` = '$sno'";
-          $RUN = mysqli_query($con, $update);
-          $upN = true;
-          if (!$RUN)
-            die("Not Working" . mysqli_error($con));
-          if ($upN == true) {
-            ShowSuccess('Information Updated successfully', 'Admin!');
+      $dateOfBirth1 = $_POST['dob1'];
+      $today = new DateTime();   // Current date
+      $diff = date_diff(date_create($dateOfBirth1), $today);  // Finds the difference
+      $age = $diff->y;   // Gets the year difference (i.e., the age)
+      if ($age >= 18) {
+        $sno = $_POST['sno'];
+        $Name = $_POST['unm1'];
+        $pass = $_POST['pwd1'];
+        $date = $_POST['jd1'];
+        $depa = $_POST['dep1'];
+        $pac = $_POST['package1'];
+        $designation1 = $_POST['designation1'];
+        $empContact1 = $_POST['empContact1'];
+        $empEmail1 = $_POST['empEmail1'];
+
+        if (isset($_POST['delete'])) { //* <----- Script For Delete The Employee ------->
+          $id = $_POST['delete'];
+          $delete = "DELETE FROM _emp_regi WHERE id = '$id'";
+          $RUn = mysqli_query($con, $delete);
+          if ($RUn)
+            $Del = true;
+          if ($Del == true) {
+            ShowSuccess('Employe Deleted successfully', 'Admin!');
+          }
+        } else {
+          if (isset($_POST['updateBtn'])) { //* <----- Script For Update The Employee -------> 
+            if ($designation1 == 'Admin') {
+              if ($depa != "Administration")
+                ShowError('You can not change department and designation of admin', 'Sorry!');
+              $adminUpdate = "UPDATE `_admin_regi` SET `name` = '$Name', `password` = '$pass',`Jdate` = '$date', `dob`='$dateOfBirth1',`package` = '$pac',`contact`='$empContact1', `email`='$empEmail1' WHERE `_admin_regi`.`id` = '$sno'";
+              $RUN = mysqli_query($con, $adminUpdate);
+            } else {
+              $update = "UPDATE `_emp_regi` SET `Ename` = '$Name', `contact`='$empContact1', `email`='$empEmail1', `DOB`='$dateOfBirth1',`password` = '$pass',`Jdate` = '$date',`dep` = '$depa' , `package` = '$pac',`designation`='$designation1' WHERE `_emp_regi`.`id` = '$sno'";
+              $RUN = mysqli_query($con, $update);
+              $upN = true;
+            }
+            if (!$RUN)
+              die("Not Working" . mysqli_error($con));
+            if ($upN == true) {
+              ShowSuccess('Information Updated successfully', 'Admin!');
+            }
           }
         }
+      } else {
+        ShowError('Enter Valid Date of Birth', 'Admin!');
       }
+
     }
+
   }
   ?>
   <!--//* Show Modal ------->
@@ -67,23 +91,53 @@ $upN = false;
             <input type="hidden" name="sno" id="sno">
 
             <label for="unm1" class="text-dark"> Employe Name :</label>
-            <input type="text" name="unm1" class=" inp form-control" id="unm1">
+            <input type="text" name="unm1" class="form-control" id="unm1">
+
+            <div class="row">
+              <div class="col-md-6">
+                <label for="empContact1" class="mt-3 text-dark"> Employee Contact No. :</label>
+                <input type="text" name="empContact1" maxlength="10" class="form-control" id="empContact1">
+              </div>
+              <div class="col-md-6">
+                <label for="empEmail1" class="mt-3 text-dark"> Employee Email :</label>
+                <input type="email" name="empEmail1" class="form-control" id="empEmail1">
+              </div>
+            </div>
 
             <label for="pwd1" class="mt-3 text-dark"> Password :</label>
-            <input type="text" name="pwd1" maxlength="8" minlength="6" class="inp form-control mt-1" id="pwd1">
+            <input type="text" name="pwd1" maxlength="8" minlength="6" class="form-control mt-1" id="pwd1">
 
-            <label for="jd1" class="mt-3 text-dark"> Joing date :</label>
-            <input type="date" name="jd1" class="inp form-control" id="jd1" value="<?php echo date('Y-m-j'); ?>"
-              required>
+            <div class="row">
+              <div class="col-md-6">
+                <label for="jd1" class="mt-3 text-dark"> Joing date :</label>
+                <input type="date" name="jd1" class="form-control" id="jd1" value="<?php echo date('Y-m-j'); ?>"
+                  required>
+              </div>
+              <div class="col-md-6">
+                <label for="dob1" class="mt-3 text-dark"> Date of Birth :</label>
+                <input type="date" name="dob1" class="form-control" id="dob1" required>
+              </div>
+            </div>
 
-            <label for="dep1" class="mt-3 text-dark"> Department :</label>
-            <select name="dep1" id="dep1" class="inp form-control">
-              <option value="Marketing">Marketing</option>
-              <option value="Sales">Sales</option>
-              <option value="Product">Product</option>
-              <option value="Human_Resource">Human Resource</option>
-              <option value="Admin">Admin</option>
-            </select>
+            <div class="row">
+              <div class="col-md-6">
+                <label for="dep1" class="mt-3 text-dark"> Department :</label>
+                <select name="dep1" id="dep1" class="form-control">
+                  <option value="Marketing">Marketing</option>
+                  <option value="Sales">Sales</option>
+                  <option value="Product">Product</option>
+                  <option value="Human_Resource">Human Resource</option>
+                  <option value="Administration">Administration</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label for="designation1" class="mt-3 text-dark"> Designation :</label>
+                <input type="text" name="designation1" class="form-control" id="designation1" required>
+              </div>
+            </div>
+
+            <label for="package1" class="mt-3 ">&nbsp;Package :</label>
+            <input type="text" name="package1" maxlength="10" class="form-control mt-1 p-2" id="package1" required>
 
             <button name="updateBtn" class="update_Btn fw-semibold my-3 mx-2 px-4 btn-sm rounded-2" id="editID">
               Edit
@@ -92,7 +146,6 @@ $upN = false;
               style="letter-spacing:1px;">
               Delete
             </button>
-
           </form>
         </div>
       </div>
@@ -108,62 +161,93 @@ $upN = false;
           <th>Serial No.</th>
           <th>Name</th>
           <th>Password</th>
+          <th>Email</th>
+          <th>Contact No.</th>
           <th>Joing Date</th>
+          <th>Date of Birth</th>
           <th>Department</th>
+          <th>Designation</th>
+          <th>Package</th>
           <th>Action</th>
         </tr>
       </thead>
       <tbody>
         <?php
-        if (!isset($_SESSION['admin_name'])) {
-        ?>
-          <tr>
-            <td>1</td>
-            <td>employee</td>
-            <td>emp_pass</td>
-            <td>2020-00-00</td>
-            <td>emp_department</td>
-            <td class="text-center">
-              <button class="update_Btn fw-semibold fw-3 px-3 btn-sm rounded-2" id="editID">
-                Edit
-              </button>
-              <button class="btn btn-danger btn-sm fw-3 rounded-2" id="editDelete" style="letter-spacing:1px;">
-                Delete
-              </button>
-            </td>
-          </tr>
-          <?php } else {
-          $admin_name = $_SESSION['admin_name'];
-          $select = "SELECT * FROM `_emp_regi` where `admin`='$admin_name'";
-          $Run1 = mysqli_query($con, $select);
-          if (!$Run1)
-            die("Not Working" . mysqli_error($con));
-          $n = 1;
-          while ($row = mysqli_fetch_assoc($Run1)) {
+        $select = "
+SELECT 
+  id,
+  name AS full_name,
+  password,
+  Jdate,
+  dob,
+  package,
+  contact,
+  email,
+  dep,
+  designation,
+  NULL AS admin
+FROM _admin_regi WHERE `designation`='admin' OR `designation`='Admin'
+
+UNION ALL
+
+SELECT 
+  id,
+  Ename AS full_name,
+  password,
+  Jdate,
+  DOB AS dob,
+  package,
+  contact,
+  email,
+  dep,
+  designation,
+  admin
+FROM _emp_regi
+";
+        ;
+        $Run1 = mysqli_query($con, $select);
+        if (!$Run1)
+          die("Not Working" . mysqli_error($con));
+        $n = 1;
+        while ($row = mysqli_fetch_assoc($Run1)) {
           ?>
-            <tr>
-              <td>
-                <?php echo $n; ?>
-              </td>
-              <td>
-                <?php echo $row['Ename']; ?>
-              </td>
-              <td>
-                <?php echo $row['password']; ?>
-              </td>
-              <td>
-                <?php echo $row['Jdate']; ?>
-              </td>
-              <td>
-                <?php echo $row['dep']; ?>
-              </td>
-              <td class="text-center">
-                <button class="editData btn" id="<?php echo $row['id']; ?>">Profile</button>
-              </td>
-            </tr>
+        <tr>
+          <td>
+            <?php echo $n; ?>
+          </td>
+          <td>
+            <?php echo $row['full_name']; ?>
+          </td>
+          <td>
+            <?php echo $row['password']; ?>
+          </td>
+          <td>
+            <?php echo $row['email']; ?>
+          </td>
+          <td>
+            <?php echo $row['contact']; ?>
+          </td>
+          <td>
+            <?php echo $row['Jdate']; ?>
+          </td>
+          <td>
+            <?php echo $row['dob']; ?>
+          </td>
+          <td>
+            <?php echo $row['dep']; ?>
+          </td>
+          <td>
+            <?php echo $row['designation']; ?>
+          </td>
+          <td>
+            <?php echo $row['package']; ?>
+          </td>
+          <td class="text-center">
+            <button class="editData btn" id="<?php echo $row['id']; ?>">Profile</button>
+          </td>
+        </tr>
         <?php
-            $n++;
-          }
+        $n++;
         }
         ?>
       </tbody>

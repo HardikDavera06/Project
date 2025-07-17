@@ -72,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
 
             <div class="field">
-                <input type="text" name="con" id="aboutContactNumber" minlength="10" maxlength="10" class="pass"
+                <input type="text" name="con" id="aboutContact" minlength="10" maxlength="10" class="pass"
                     title="Enter contact no." required />
                 <label for="con">Contact no.</label>
             </div>

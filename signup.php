@@ -27,31 +27,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
    $coN = $_POST['contact'];
    $role = $_POST['role'];
 
-   //* <--- Check Admin Already Registered Or Not--> 
-   $selectQuery = "SELECT * FROM _admin_regi where `name`= '$aname' AND `contact`='$coN' OR `email`='$Email'";
-   $run = mysqli_query($con, $selectQuery);
-   $NumExistscheck = mysqli_num_rows($run);
-   if ($NumExistscheck == 1) {
-      ShowError('Admin Already Existed', 'OOPS!');
-   } else {
-      // * <--- Insert New Admin -->
-      if ($pwd == $rpwd) {
-         $Hashpwd = password_hash($pwd, PASSWORD_DEFAULT);
-         $HashRpwd = password_hash($rpwd, PASSWORD_DEFAULT);
-         $insert = "INSERT INTO `_admin_regi` (`name`, `password`, `re_type_password` , `contact`, `email`,`role`) VALUES ('$aname', '$Hashpwd', '$HashRpwd' , '$coN', '$Email','$role')";
-         $run = mysqli_query($con, $insert);
-         if (!$run)
-            die("not working" . mysqli_error($con));
-         if (mysqli_affected_rows($con) == 1) {
-            header("location:index2.php");
-            $_SESSION['admin_register'] = 1; //* <-- Use For Display Message On Page For Success Register
-            $_SESSION['admin_name'] = $aname; //* Store The New Admin Name
-         }
-      } else {
-         ShowError('Passwords Do Not Match', 'ERROR!');
+   // //* <--- Check Admin Already Registered Or Not--> 
+   // $selectQuery = "SELECT * FROM _admin_regi where `name`= '$aname' OR `contact`='$coN' OR `email`='$Email'";
+   // $run = mysqli_query($con, $selectQuery);
+   // $NumExistscheck = mysqli_num_rows($run);
+   // if ($NumExistscheck == 1) {
+   //    ShowError('Admin Already Existed', 'OOPS!');
+   // } else {
+   // * <--- Insert New Admin -->
+   if ($pwd == $rpwd) {
+      $Hashpwd = password_hash($pwd, PASSWORD_DEFAULT);
+      $HashRpwd = password_hash($rpwd, PASSWORD_DEFAULT);
+      $insert = "INSERT INTO `_admin_regi` (`name`, `password`, `re_type_password` , `contact`, `email`,`role`) VALUES ('$aname', '$Hashpwd', '$HashRpwd' , '$coN', '$Email','$role')";
+      $run = mysqli_query($con, $insert);
+      if (!$run)
+         die("not working" . mysqli_error($con));
+      if (mysqli_affected_rows($con) == 1) {
+         header("location:index2.php");
+         $_SESSION['admin_register'] = 1; //* <-- Use For Display Message On Page For Success Register
+         $_SESSION['admin_name'] = $aname; //* Store The New Admin Name
       }
+   } else {
+      ShowError('Passwords Do Not Match', 'ERROR!');
    }
 }
+// }
 
 ?>
 
