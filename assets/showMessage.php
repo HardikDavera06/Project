@@ -19,7 +19,7 @@ function ShowError($msg,$subMsg)
                 "showMethod": "show",
                 "hideMethod": "hide"
             }
-            toastr.error('<?php echo $msg; ?>', '<?php echo $subMsg ?>');
+            toastr.error("<?php echo $msg; ?>", "<?php echo $subMsg ?>");
         });
     </script>
 <?php
@@ -44,7 +44,7 @@ function ShowInfo($msg,$subMsg)
                 "showMethod": "show",
                 "hideMethod": "hide"
             }
-            toastr.info('<?php echo $msg; ?>', '<?php echo $subMsg ?>');
+            toastr.info("<?php echo $msg; ?>", "<?php echo $subMsg ?>");
         });
     </script>
 <?php
@@ -69,7 +69,7 @@ function ShowSuccess($msg,$subMsg)
                 "showMethod": "show",
                 "hideMethod": "hide"
             }
-            toastr.success('<?php echo $msg; ?>', '<?php echo $subMsg ?>');
+            toastr.success("<?php echo $msg; ?>", "<?php echo $subMsg ?>");
         });
     </script>
 <?php

@@ -20,22 +20,21 @@ validateNumber(editContactValidation);
 
 //* <---- Edit feature ------> */
 edits = document.getElementsByClassName("editData");
+
 Array.from(edits)?.forEach((e) => {
   e?.addEventListener("click", (y) => {
-    tr = y.target.parentNode.parentNode;
+    tr = y.target.parentNode.parentNode.parentNode.parentNode;
     name = tr.getElementsByTagName("td")[1].innerText;
-    contact = tr.getElementsByTagName("td")[2].innerText;
-    email = tr.getElementsByTagName("td")[3].innerText;
-    password = tr.getElementsByTagName("td")[4].innerText;
-    jdate = tr.getElementsByTagName("td")[5].innerText;
-    dob = tr.getElementsByTagName("td")[6].innerText;
-    depart = tr.getElementsByTagName("td")[7].innerText;
-    designation = tr.getElementsByTagName("td")[8].innerText;
-    packages = tr.getElementsByTagName("td")[9].innerText;
+    email = tr.getElementsByTagName("td")[2].innerText;
+    contact = tr.getElementsByTagName("td")[3].innerText;
+    jdate = tr.getElementsByTagName("td")[4].innerText;
+    dob = tr.getElementsByTagName("td")[5].innerText;
+    depart = tr.getElementsByTagName("td")[6].innerText;
+    designation = tr.getElementsByTagName("td")[7].innerText;
+    packages = tr.getElementsByTagName("td")[8].innerText;
     unm1.value = name;
     empContact1.value = contact;
     empEmail1.value = email;
-    pwd1.value = password;
     jd1.value = jdate;
     dob1.value = dob;
     dep1.value = depart;
@@ -53,5 +52,15 @@ users = document.getElementsByClassName("navUsers");
 Array.from(users)?.forEach((e) => {
   e?.addEventListener("click", (h) => {
     $("#navModal").modal("toggle");
+  });
+});
+
+forgetPassword = document.getElementsByClassName("forgetPassword");
+Array.from(forgetPassword)?.forEach((e) => {
+  e?.addEventListener("click", (h) => {
+    tr = h.target.parentNode.parentNode.parentNode.parentNode;
+    department.value = tr.getElementsByTagName("td")[6].innerText;
+    passwordID.value = h.target.id;
+    $("#forgetPasswordModal").modal("toggle");
   });
 });

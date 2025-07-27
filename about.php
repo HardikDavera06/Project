@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $insert = "INSERT INTO `contact_us`(`cu_name`, `cu_email`, `cu_number`,`admin`) VALUES ('$nm','$mail','$num','$admin_name')";
             $RUn = mysqli_query($con, $insert);
             if (mysqli_affected_rows($con) == 1) {
-                ShowSuccess('Details Sended successfully', 'Admin!');
+                ShowSuccess('Details Sended successfully', 'Congrats!');
             }
         }
     } else {

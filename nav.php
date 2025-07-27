@@ -17,7 +17,7 @@ require_once "config.php";
     <?php
     $admin_name = '';
     $select = '';
-    if (isset($_SESSION['admin_name']) ) {
+    if (isset($_SESSION['admin_name'])) {
         $admin_name = $_SESSION['admin_name'];
         $select = "SELECT * FROM `_admin_regi` WHERE `name`='$admin_name'";
         $select_query = $con->query($select);
@@ -78,10 +78,10 @@ require_once "config.php";
                         <li class="nav-item mx-2">
                             <a class="nav-link linkU" href="employe.php" aria-current="page">Employes List</a>
                         </li>
+                        <li class="nav-item mx-2">
+                            <a class="nav-link linkU" href="about.php" aria-current="page">Contact Us</a>
+                        </li>
                     <?php } ?>
-                    <li class="nav-item mx-2">
-                        <a class="nav-link linkU" href="about.php" aria-current="page">About</a>
-                    </li>
                 </ul>
                 <?php
                 if (isset($_SESSION['admin_login'])) { //* <-- If Admin LoggedIn Then Show Admin's Details -->

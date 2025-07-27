@@ -26,15 +26,46 @@ $upN = false;
 <body>
   <?php
   if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+    if (isset($_POST['updatePasswordBtn'])) { //* <-- Script for update password -->
+      $id = $_POST['passwordID'];
+      $department = $_POST['department'];
+      $updated_password = $_POST['forgetPassword'];
+      $confirm_pswd = $_POST['confirmPassword'];
+      $getTable = ($department == "Administration") ? "_admin_regi" : "_emp_regi";
+
+      if ($updated_password == $confirm_pswd) {
+
+        $passwordExistence = "SELECT * FROM `$getTable` WHERE `id`='$id'";
+        $executeExistence = mysqli_query($con, $passwordExistence);
+        $column = mysqli_fetch_assoc($executeExistence);
+
+        if (password_verify($updated_password, $column['password'])) { //* Check exitence of password into db's table
+          ShowError('Please Try Another Password', 'Sorry!');
+        } else { 
+          $hash_update_pswd = password_hash($updated_password, PASSWORD_DEFAULT);
+          $updateQuery = "UPDATE `$getTable` SET `password`='$hash_update_pswd' WHERE `id`='$id'"; //* Update password
+          $uptPasswordExecute = mysqli_query($con, $updateQuery);
+          if (mysqli_affected_rows($con) == 1) {
+            ShowSuccess('Password Updated', 'Successfully!');
+          }
+        }
+
+      } else {
+        ShowError("Password didn't match", "Oops!");
+      }
+    }
+
     if (isset($_POST['sno'])) {
+
       $dateOfBirth1 = $_POST['dob1'];
       $today = new DateTime();   // Current date
       $diff = date_diff(date_create($dateOfBirth1), $today);  // Finds the difference
       $age = $diff->y;   // Gets the year difference (i.e., the age)
+  
       if ($age >= 18) {
         $sno = $_POST['sno'];
         $Name = $_POST['unm1'];
-        $pass = $_POST['pwd1'];
         $date = $_POST['jd1'];
         $depa = $_POST['dep1'];
         $pac = $_POST['package1'];
@@ -42,9 +73,13 @@ $upN = false;
         $empContact1 = $_POST['empContact1'];
         $empEmail1 = $_POST['empEmail1'];
 
+        $targetTable = ($depa == "Administration") ? "_admin_regi" : "_emp_regi";
+        $deleteFromTable = ($depa == "Administration") ? "_emp_regi" : "_admin_regi";
+        $nameField = ($depa == "Administration") ? "name" : "Ename";
+
         if (isset($_POST['delete'])) { //* <----- Script For Delete The Employee ------->
           $id = $_POST['delete'];
-          $delete = "DELETE FROM _emp_regi WHERE id = '$id'";
+          $delete = "DELETE FROM `$targetTable` WHERE id = '$id'";
           $RUn = mysqli_query($con, $delete);
           if ($RUn)
             $Del = true;
@@ -53,32 +88,68 @@ $upN = false;
           }
         } else {
           if (isset($_POST['updateBtn'])) { //* <----- Script For Update The Employee -------> 
-            if ($designation1 == 'Admin') {
-              if ($depa != "Administration")
-                ShowError('You can not change department and designation of admin', 'Sorry!');
-              $adminUpdate = "UPDATE `_admin_regi` SET `name` = '$Name', `password` = '$pass',`Jdate` = '$date', `dob`='$dateOfBirth1',`package` = '$pac',`contact`='$empContact1', `email`='$empEmail1' WHERE `_admin_regi`.`id` = '$sno'";
-              $RUN = mysqli_query($con, $adminUpdate);
+            $checkExistence = "SELECT * FROM `$targetTable` WHERE `contact` = '$empContact1' OR `email` = '$empEmail1'";
+            $executeExistenceCheck = mysqli_query($con, $checkExistence);
+
+            if (mysqli_num_rows($executeExistenceCheck) > 0) {
+              $updateEmployee = "UPDATE `$targetTable` SET `$nameField` = '$Name',`Jdate` = '$date', `dob`='$dateOfBirth1',`package` = '$pac',`contact`='$empContact1', `email`='$empEmail1',`designation`='$designation1' WHERE `$targetTable`.`id` = '$sno'";
+              $updateExecute = mysqli_query($con, $updateEmployee);
             } else {
-              $update = "UPDATE `_emp_regi` SET `Ename` = '$Name', `contact`='$empContact1', `email`='$empEmail1', `DOB`='$dateOfBirth1',`password` = '$pass',`Jdate` = '$date',`dep` = '$depa' , `package` = '$pac',`designation`='$designation1' WHERE `_emp_regi`.`id` = '$sno'";
-              $RUN = mysqli_query($con, $update);
-              $upN = true;
+              $Hashpwd = password_hash('NEXGEN@123', PASSWORD_DEFAULT);
+              $insertNew = "INSERT INTO `$targetTable` (`$nameField`,`password`,`Jdate`,`dob`,`package`,`contact`,`email`,`dep`,`designation`) VALUES ('$Name','$Hashpwd','$date','$dateOfBirth1','$pac','$empContact1','$empEmail1','$depa','$designation1') ";
+              $insertExecute = mysqli_query($con, $insertNew);
+              if (mysqli_affected_rows($con) == 1) {
+                $deleteFromAnother = "DELETE FROM `$deleteFromTable` WHERE `id` = '$sno'";
+                $deleteExecute = mysqli_query($con, $deleteFromAnother);
+              }
             }
-            if (!$RUN)
-              die("Not Working" . mysqli_error($con));
-            if ($upN == true) {
-              ShowSuccess('Information Updated successfully', 'Admin!');
-            }
+
+            ShowSuccess('Employee Updated', 'Successfully!');
           }
         }
       } else {
-        ShowError('Enter Valid Date of Birth', 'Admin!');
+        ShowError('Enter Valid Date of Birth', 'Please!');
       }
-
     }
 
   }
   ?>
-  <!--//* Show Modal ------->
+
+  <!--//* Show Forget Password Modal  -->
+  <div class="modal fade" id="forgetPasswordModal" aria-labelledby="forgetPasswordModal" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class=" modal-title fs-5 text-success" id="forgetPasswordModal">Forget Password</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="dialog modal-body container">
+          <form action="employe.php" method="post" class="form p-3 fw-semibold">
+            <input type="hidden" name="department" id="department">
+            <input type="hidden" name="passwordID" id="passwordID">
+
+            <label for="forgetPassword" class="text-dark"> Password :</label>
+            <input type="password" name="forgetPassword" class="form-control" id="forgetPassword" maxlength="8"
+              minlength="6" required>
+
+            <label for="confirmPassword" class="text-dark mt-3"> Confirm Password:</label>
+            <input type="password" name="confirmPassword" class="form-control" id="confirmPassword" maxlength="8"
+              minlength="6" required>
+
+            <button name="updatePasswordBtn" class="update_Btn fw-semibold mt-4 btn-sm rounded-2"
+              id="updatePasswordBtn">
+              Forget Password
+            </button>
+            <button type="reset" class="btn btn-light btn-outline-dark btn-sm mx-2">clear</button>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!--//* Show Edit Emlpoyee Modal ------->
   <div class="modal fade" id="EDITmodal" aria-labelledby="EDITmodal" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -95,17 +166,14 @@ $upN = false;
 
             <div class="row">
               <div class="col-md-6">
-                <label for="empContact1" class="mt-3 text-dark"> Employee Contact No. :</label>
-                <input type="text" name="empContact1" maxlength="10" class="form-control" id="empContact1">
-              </div>
-              <div class="col-md-6">
                 <label for="empEmail1" class="mt-3 text-dark"> Employee Email :</label>
                 <input type="email" name="empEmail1" class="form-control" id="empEmail1">
               </div>
+              <div class="col-md-6">
+                <label for="empContact1" class="mt-3 text-dark"> Employee Contact No. :</label>
+                <input type="text" name="empContact1" maxlength="10" class="form-control" id="empContact1">
+              </div>
             </div>
-
-            <label for="pwd1" class="mt-3 text-dark"> Password :</label>
-            <input type="text" name="pwd1" maxlength="8" minlength="6" class="form-control mt-1" id="pwd1">
 
             <div class="row">
               <div class="col-md-6">
@@ -139,7 +207,7 @@ $upN = false;
             <label for="package1" class="mt-3 ">&nbsp;Package :</label>
             <input type="text" name="package1" maxlength="10" class="form-control mt-1 p-2" id="package1" required>
 
-            <button name="updateBtn" class="update_Btn fw-semibold my-3 mx-2 px-4 btn-sm rounded-2" id="editID">
+            <button name="updateBtn" class="update_Btn fw-semibold mt-4 mx-2 px-4 btn-sm rounded-2" id="editID">
               Edit
             </button>
             <button class="btn btn-danger btn-sm fw-3 rounded-2 " name="delete" id="editDelete"
@@ -160,7 +228,6 @@ $upN = false;
         <tr>
           <th>Serial No.</th>
           <th>Name</th>
-          <th>Password</th>
           <th>Email</th>
           <th>Contact No.</th>
           <th>Joing Date</th>
@@ -168,7 +235,7 @@ $upN = false;
           <th>Department</th>
           <th>Designation</th>
           <th>Package</th>
-          <th>Action</th>
+          <th class="text-center">Action</th>
         </tr>
       </thead>
       <tbody>
@@ -177,7 +244,6 @@ $upN = false;
 SELECT 
   id,
   name AS full_name,
-  password,
   Jdate,
   dob,
   package,
@@ -186,14 +252,13 @@ SELECT
   dep,
   designation,
   NULL AS admin
-FROM _admin_regi WHERE `designation`='admin' OR `designation`='Admin'
+FROM _admin_regi WHERE `dep`='Administration'
 
 UNION ALL
 
 SELECT 
   id,
   Ename AS full_name,
-  password,
   Jdate,
   DOB AS dob,
   package,
@@ -219,9 +284,6 @@ FROM _emp_regi
             <?php echo $row['full_name']; ?>
           </td>
           <td>
-            <?php echo $row['password']; ?>
-          </td>
-          <td>
             <?php echo $row['email']; ?>
           </td>
           <td>
@@ -243,8 +305,16 @@ FROM _emp_regi
             <?php echo $row['package']; ?>
           </td>
           <td class="text-center">
-            <button class="editData btn" id="<?php echo $row['id']; ?>">Profile</button>
+            <div class="row">
+              <div class="col-md-6">
+                <button class="editData btn" id="<?php echo $row['id']; ?>">Profile</button>
+              </div>
+              <div class="col-md-6">
+                <button class="forgetPassword btn" id="<?php echo $row['id']; ?>">Forget</button>
+              </div>
+            </div>
           </td>
+
         </tr>
         <?php
         $n++;
