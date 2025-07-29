@@ -42,7 +42,7 @@ $upN = false;
 
         if (password_verify($updated_password, $column['password'])) { //* Check exitence of password into db's table
           ShowError('Please Try Another Password', 'Sorry!');
-        } else { 
+        } else {
           $hash_update_pswd = password_hash($updated_password, PASSWORD_DEFAULT);
           $updateQuery = "UPDATE `$getTable` SET `password`='$hash_update_pswd' WHERE `id`='$id'"; //* Update password
           $uptPasswordExecute = mysqli_query($con, $updateQuery);
@@ -210,10 +210,12 @@ $upN = false;
             <button name="updateBtn" class="update_Btn fw-semibold mt-4 mx-2 px-4 btn-sm rounded-2" id="editID">
               Edit
             </button>
+            <?php if (isset($_SESSION['designation']) && $_SESSION['designation'] == "superadmin") { ?>
             <button class="btn btn-danger btn-sm fw-3 rounded-2 " name="delete" id="editDelete"
               style="letter-spacing:1px;">
               Delete
             </button>
+            <?php } ?>
           </form>
         </div>
       </div>
@@ -252,7 +254,7 @@ SELECT
   dep,
   designation,
   NULL AS admin
-FROM _admin_regi WHERE `dep`='Administration'
+FROM _admin_regi WHERE `dep`='Administration' AND `designation` != 'superadmin'
 
 UNION ALL
 

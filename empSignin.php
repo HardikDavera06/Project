@@ -27,9 +27,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $row = mysqli_fetch_assoc($RUN);
         if (password_verify($pwd, $row['password'])) //* <---- Password Validation ------>
         {
-            $_SESSION['admin_login'] = 1; //* If Admin LoggedIn Display Success Message In Home Page
-            $_SESSION['admin_name'] = $userName;
+            $_SESSION['emp_login'] = 1; //* If Admin LoggedIn Display Success Message In Home Page
+            $_SESSION['emp_name'] = $userName;
             $_SESSION['designation'] = $row['designation'];
+            $_SESSION['department'] = $row['dep'];
             header('location:index2.php');
         } else //* If Enter Wrong Password Display Error Message
         {

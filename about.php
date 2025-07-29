@@ -31,9 +31,9 @@ require_once "config.php";
 require_once "./assets/showMessage.php";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (isset($_SESSION['admin_login']) || isset($_SESSION['admin_register'])) {
-        if (isset($_SESSION['admin_name'])) { //*<---- If The Admin LoggedIn After Workout All Tasks ---->
-            $admin_name = $_SESSION['admin_name'];
+    if (isset($_SESSION['admin_login']) || isset($_SESSION['emp_login'])) {
+        if (isset($_SESSION['emp_name']) || isset($_SESSION['admin_name'])) { 
+            $admin_name = $_SESSION['emp_name'] ?? $_SESSION['admin_name'];
             $nm = trim($_POST['nm']);
             $mail = $_POST['mail'];
             $num = $_POST['con'];

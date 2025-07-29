@@ -41,28 +41,32 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $depart = $_POST['dep'];
                     $Jdate = $_POST['jd'];
                     $designation = $_POST['designation'];
-
-                    $select = "SELECT email, contact  FROM _emp_regi WHERE email='$empEmail' OR contact='$empContact'
+                
+                    if ($Jdate != $dateOfBirth) {
+                        $select = "SELECT email, contact  FROM _emp_regi WHERE email='$empEmail' OR contact='$empContact'
                                 UNION
                                 SELECT email, contact FROM _admin_regi WHERE email='$empEmail' OR contact='$empContact'"; //* <---- FOR CHECK DUPLICATE EMPLOYE ---->
-                    $run = mysqli_query($con, $select);
-                    $NumExitscheck = mysqli_num_rows($run);
-                    if ($NumExitscheck == 1) {
-                        ShowError('Employe Already Registed', 'Sorry!');
-                    } else { //* <------ INSERT NEW EMPLOYES ------>
-                        $Hashpwd = password_hash($password, PASSWORD_DEFAULT);
-                        if ($depart == "Administration") {
-                            $insert = "INSERT INTO `_admin_regi` (`name`,`password`,`Jdate`,`dob`,`package`,`contact`,`email`,`dep`,`designation`) VALUES ('$eName','$Hashpwd','$Jdate','$dateOfBirth','$package','$empContact','$empEmail','$depart','Admin') ";
-                        } else {
-                            $insert = "INSERT INTO `_emp_regi`(`Ename`, `contact`, `email`, `DOB`, `password`, `Jdate`, `dep`,`package`,`admin`,`designation`) VALUES ('$eName','$empContact','$empEmail','$dateOfBirth','$Hashpwd','$Jdate','$depart','$package','$admin_name','$designation')";
-                        }   
-                        $Run = mysqli_query($con, $insert);
-                        $inN = true;
-                        if (!$Run)
-                            die("Not Working" . mysqli_error($con));
-                        if ($inN == true) {
-                            ShowSuccess('Employe Registerd Successfully', 'Congrats!');
+                        $run = mysqli_query($con, $select);
+                        $NumExitscheck = mysqli_num_rows($run);
+                        if ($NumExitscheck > 0) {
+                            ShowError('Employee Already Registed', 'Sorry!');
+                        } else { //* <------ INSERT NEW EMPLOYES ------>
+                            $Hashpwd = password_hash($password, PASSWORD_DEFAULT);
+                            if ($depart == "Administration") {
+                                $insert = "INSERT INTO `_admin_regi` (`name`,`password`,`Jdate`,`dob`,`package`,`contact`,`email`,`dep`,`designation`) VALUES ('$eName','$Hashpwd','$Jdate','$dateOfBirth','$package','$empContact','$empEmail','$depart','$designation') ";
+                            } else {
+                                $insert = "INSERT INTO `_emp_regi`(`Ename`, `contact`, `email`, `DOB`, `password`, `Jdate`, `dep`,`package`,`admin`,`designation`) VALUES ('$eName','$empContact','$empEmail','$dateOfBirth','$Hashpwd','$Jdate','$depart','$package','$admin_name','$designation')";
+                            }
+                            $Run = mysqli_query($con, $insert);
+                            $inN = true;
+                            if (!$Run)
+                                die("Not Working" . mysqli_error($con));
+                            if ($inN == true) {
+                                ShowSuccess('Employe Registerd Successfully', 'Congrats!');
+                            }
                         }
+                    } else {    
+                        ShowError('Enter Valid Dates','Please!');
                     }
                 } else {
                     ShowError('Enter Valid Date of Birth', 'Please!');

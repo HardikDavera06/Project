@@ -34,13 +34,17 @@ require_once "./assets/showMessage.php";
          ShowSuccess('New Admin Registered!', 'Successfully');
          $_SESSION['admin_register']++;
       }
-   }
-   if (isset($_SESSION['admin_login'])) {
-      if ($_SESSION['admin_login'] == 1) {
-         ShowSuccess('Admin LoggedIn!', 'Successfully');
-         $_SESSION['admin_login']++;
+   }  
+
+   $login = isset($_SESSION['admin_login']) ? "Admin" : "Employee";
+   $inc = isset($_SESSION['admin_login']) ? "admin_login" : "emp_login";
+   if (isset($_SESSION[$inc])){
+      if ($_SESSION[$inc] == 1) {
+         ShowSuccess($login.' LoggedIn!', 'Successfully');
+         $_SESSION[$inc]++;
       }
    }
+
    ?>
    <div class="header-text">
       <div class="text">

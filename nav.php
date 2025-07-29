@@ -15,11 +15,15 @@ require_once "config.php";
 
 <body>
     <?php
-    $admin_name = '';
+    if(isset($_SESSION['admin_name'])) $userName =  $_SESSION['admin_name'] ;
+    if(isset($_SESSION['emp_name'])) $userName = $_SESSION['emp_name'];
+
+    $table = (isset($_SESSION['department']) && $_SESSION['department'] == "Administration") ? "_admin_regi" : "_emp_regi";
+
+    $tblNameColumn = (isset($_SESSION['department']) && $_SESSION['department'] == "Administration") ? "name" : "Ename";
     $select = '';
-    if (isset($_SESSION['admin_name'])) {
-        $admin_name = $_SESSION['admin_name'];
-        $select = "SELECT * FROM `_admin_regi` WHERE `name`='$admin_name'";
+    if (isset($_SESSION['admin_login']) || isset($_SESSION['emp_login'])) {
+        $select = "SELECT * FROM `$table` WHERE `$tblNameColumn`='$userName'";
         $select_query = $con->query($select);
         $row1 = mysqli_fetch_assoc($select_query);
     }
@@ -36,7 +40,7 @@ require_once "config.php";
                     <form method="post" action="nav.php" class="form p-3 fw-semibold">
 
                         <label for="AdName" class="text-dark"> Admin Name :</label>
-                        <input type="text" name="AdName" value="<?php echo $row1['name']; ?>"
+                        <input type="text" name="AdName" value="<?php echo $row1[$tblNameColumn]; ?>"
                             class=" nav-inp form-control" id="AdName" disabled>
 
                         <label for="CONTACT" class="mt-3 text-dark"> Contact Number</label>
@@ -78,17 +82,20 @@ require_once "config.php";
                         <li class="nav-item mx-2">
                             <a class="nav-link linkU" href="employe.php" aria-current="page">Employes List</a>
                         </li>
-                        <li class="nav-item mx-2">
-                            <a class="nav-link linkU" href="about.php" aria-current="page">Contact Us</a>
-                        </li>
                     <?php } ?>
+                    <li class="nav-item mx-2">
+                        <a class="nav-link linkU" href="about.php" aria-current="page">Contact Us</a>
+                    </li>
+                    <li class="nav-item mx-2">
+                        <a class="nav-link linkU" href="applyLeave.php" aria-current="page">Apply for leave</a>
+                    </li>
                 </ul>
                 <?php
-                if (isset($_SESSION['admin_login'])) { //* <-- If Admin LoggedIn Then Show Admin's Details -->
+                if (isset($_SESSION['admin_login']) || isset($_SESSION['emp_login'])) { //* <-- If Admin LoggedIn Then Show Admin's Details -->
                     ?>
                     <div class="mx-2 user-profile">
                         <div class="navUsers name">
-                            <span><?php echo $admin_name; ?></span>
+                            <span><?php echo $userName; ?></span>
                             <span><?php echo $_SESSION['designation']; ?></span>
                         </div>
                         <div>

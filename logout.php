@@ -1,7 +1,7 @@
 <?php
 
   session_start();
-  if(isset($_SESSION['admin_register'])||isset($_SESSION['admin_login'])) //* <-- If Admin LoggedIn Then Destroye All Sessions
+  if(isset($_SESSION['emp_login'])||isset($_SESSION['admin_login'])) //* <-- If Admin LoggedIn Then Destroye All Sessions
   {
     session_unset();
     session_destroy();

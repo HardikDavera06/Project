@@ -42,7 +42,9 @@ Array.from(edits)?.forEach((e) => {
     package1.value = packages;
     sno.value = y.target.id;
     editID.value = y.target.id;
-    editDelete.value = y.target.id;
+    if(designation == "superadmin"){
+      editDelete.value = y.target.id;
+    } 
     //* <---- toggle for open modal -----> */
     $("#EDITmodal").modal("toggle");
   });

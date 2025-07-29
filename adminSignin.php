@@ -29,6 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['admin_login'] = 1; //* If Admin LoggedIn Display Success Message In Home Page
             $_SESSION['admin_name'] = $userName;
             $_SESSION['designation'] = $row['designation'];
+            $_SESSION['department'] = $row['dep'];
             header('location:index2.php');
         } else //* If Enter Wrong Password Display Error Message
         {
