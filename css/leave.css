@@ -1,0 +1,66 @@
+.apply-leave .container {
+  max-width: 450px;
+  margin: 40px auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(126, 34, 206, 0.08);
+  padding: 32px 28px;
+}
+
+.apply-leave h2 {
+  color: #7e22ce;
+  text-align: center;
+  margin-bottom: 24px;
+  font-weight: 600;
+}
+
+.apply-leave label {
+  display: block;
+  margin-bottom: 8px;
+  color: #7e22ce;
+  font-weight: 500;
+}
+
+.apply-leave select,
+.apply-leave input[type="date"],
+.apply-leave textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  margin-bottom: 18px;
+  font-size: 15px;
+  background: #fafaff;
+  color: #333;
+  transition: border-color 0.2s;
+}
+
+.apply-leave select:focus,
+.apply-leave input:focus,
+.apply-leave textarea:focus {
+  border-color: #7e22ce;
+  outline: none;
+}
+
+.apply-leave textarea {
+  resize: vertical;
+  min-height: 60px;
+  max-height: 140px;
+}
+
+.apply-leave .btn {
+  width: 100%;
+  padding: 8px 20px 8px 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: #ffffff;
+  font-size: 15px;
+  border: 0.5px solid #4158d0;
+  font-weight: 500;
+}
+
+.apply-leave .btn:hover{
+  background: linear-gradient(-205deg, #c850c0, #4158d0);
+  color: whitesmoke;
+  transform: scale(0.98);
+}

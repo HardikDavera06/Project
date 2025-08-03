@@ -34,13 +34,13 @@ require_once "./assets/showMessage.php";
          ShowSuccess('New Admin Registered!', 'Successfully');
          $_SESSION['admin_register']++;
       }
-   }  
+   }
 
    $login = isset($_SESSION['admin_login']) ? "Admin" : "Employee";
    $inc = isset($_SESSION['admin_login']) ? "admin_login" : "emp_login";
-   if (isset($_SESSION[$inc])){
+   if (isset($_SESSION[$inc])) {
       if ($_SESSION[$inc] == 1) {
-         ShowSuccess($login.' LoggedIn!', 'Successfully');
+         ShowSuccess($login . ' LoggedIn!', 'Successfully');
          $_SESSION[$inc]++;
       }
    }
@@ -62,9 +62,7 @@ require_once "./assets/showMessage.php";
    <?php include "footer.php"; ?>
 
    <!--//*Source files for jqueryCDN and other CDN , toastr css-->
-   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-      crossorigin="anonymous"></script>
+   <script src="./js/bootstrap.bundle.min.js"></script>
    <link rel="stylesheet" href="./css/toastr.css" />
 
 </body>

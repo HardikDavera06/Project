@@ -15,8 +15,10 @@ require_once "config.php";
 
 <body>
     <?php
-    if(isset($_SESSION['admin_name'])) $userName =  $_SESSION['admin_name'] ;
-    if(isset($_SESSION['emp_name'])) $userName = $_SESSION['emp_name'];
+    if (isset($_SESSION['admin_name']))
+        $userName = $_SESSION['admin_name'];
+    if (isset($_SESSION['emp_name']))
+        $userName = $_SESSION['emp_name'];
 
     $table = (isset($_SESSION['department']) && $_SESSION['department'] == "Administration") ? "_admin_regi" : "_emp_regi";
 
@@ -74,7 +76,8 @@ require_once "config.php";
                         <a class="nav-link linkU" href="index2.php" aria-current="page">Home</a>
                     </li>
                     <?php
-                    if (isset($_SESSION['admin_login'])) { //* <-- If Admin LoggedIn Then Show Admin's Details -->
+                    // //* <-- If Admin LoggedIn Then Show Admin's Details -->
+                    if (isset($_SESSION['admin_login'])) {
                         ?>
                         <li class="nav-item mx-2">
                             <a class="nav-link linkU" href="registration.php" aria-current="page">Registration</a>
@@ -86,9 +89,33 @@ require_once "config.php";
                     <li class="nav-item mx-2">
                         <a class="nav-link linkU" href="about.php" aria-current="page">Contact Us</a>
                     </li>
-                    <li class="nav-item mx-2">
-                        <a class="nav-link linkU" href="applyLeave.php" aria-current="page">Apply for leave</a>
-                    </li>
+                    <!--//* If Admin LoggedIn Then Show Admin's Details  -->
+                    <?php if (isset($_SESSION['admin_login']) || isset($_SESSION['emp_login'])) { ?>
+                        <div class="dropdown">
+                            <li class="nav-link linkU dropdown-toggle" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                Leave
+                            </li>
+
+                            <ul class=" p-2 dropdown-menu">
+                                <li>
+                                    <a class="nav-link linkU" href="applyLeave.php?apply=true" aria-current="page">Apply
+                                        Leave</a>
+                                </li>
+                                <?php if ($table == "_admin_regi") { ?>
+                                    <li>
+                                        <a class="nav-link linkU" href="applyLeave.php?approve=true" aria-current="page">Approve
+                                            Leave</a>
+                                    </li>
+                                <?php } else { ?>
+                                    <li class="nav-item">
+                                        <a class="nav-link linkU" href="applyLeave.php?leaveStatus=true" aria-current="page">Leave
+                                            Status</a>
+                                    </li>
+                                <?php } ?>
+                            </ul>
+                        </div>
+                    <?php } ?>
                 </ul>
                 <?php
                 if (isset($_SESSION['admin_login']) || isset($_SESSION['emp_login'])) { //* <-- If Admin LoggedIn Then Show Admin's Details -->

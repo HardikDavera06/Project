@@ -10,6 +10,7 @@
 .container form .in {
   border: 0.1px solid dark;
 }
+
 .modal-body form .update_Btn {
   padding: 8px 20px 8px 20px;
   cursor: pointer;
@@ -41,7 +42,8 @@
   transform: scale(0.97);
 }
 
-tbody .text-center .editData ,tbody .text-center .forgetPassword {
+tbody .text-center .editData,
+tbody .text-center .forgetPassword {
   cursor: pointer;
   transition: all 0.3s ease;
   background-color: #ffffff;
@@ -51,7 +53,8 @@ tbody .text-center .editData ,tbody .text-center .forgetPassword {
   font-weight: 500;
 }
 
-tbody .text-center .editData:hover ,tbody .text-center .forgetPassword:hover  {
+tbody .text-center .editData:hover,
+tbody .text-center .forgetPassword:hover {
   background: linear-gradient(-205deg, #c850c0, #4158d0);
   color: whitesmoke;
   transform: scale(0.97);

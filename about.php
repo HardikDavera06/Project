@@ -32,7 +32,7 @@ require_once "./assets/showMessage.php";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_SESSION['admin_login']) || isset($_SESSION['emp_login'])) {
-        if (isset($_SESSION['emp_name']) || isset($_SESSION['admin_name'])) { 
+        if (isset($_SESSION['emp_name']) || isset($_SESSION['admin_name'])) {
             $admin_name = $_SESSION['emp_name'] ?? $_SESSION['admin_name'];
             $nm = trim($_POST['nm']);
             $mail = $_POST['mail'];
@@ -86,9 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <!--//* Source files for jqueryCDN and other CDN -->
     <script src="./js/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
-        </script>
+    <script src="./js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="./css/toastr.css" />
     <script src="./js/script.js"></script>
 </body>

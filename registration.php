@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $depart = $_POST['dep'];
                     $Jdate = $_POST['jd'];
                     $designation = $_POST['designation'];
-                
+
                     if ($Jdate != $dateOfBirth) {
                         $select = "SELECT email, contact  FROM _emp_regi WHERE email='$empEmail' OR contact='$empContact'
                                 UNION
@@ -65,8 +65,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 ShowSuccess('Employe Registerd Successfully', 'Congrats!');
                             }
                         }
-                    } else {    
-                        ShowError('Enter Valid Dates','Please!');
+                    } else {
+                        ShowError('Enter Valid Dates', 'Please!');
                     }
                 } else {
                     ShowError('Enter Valid Date of Birth', 'Please!');
@@ -164,9 +164,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <?php include "footer.php"; ?>
 
     <!--//*Source files for jqueryCDN and other CDN , toastr css-->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
+    <script src="./js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="./css/toastr.css" />
     <script src="./js/jquery.min.js"></script>
     <script src="./js/script.js"></script>
