@@ -32,12 +32,12 @@ require_once "./assets/showMessage.php";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_SESSION['admin_login']) || isset($_SESSION['emp_login'])) {
-        if (isset($_SESSION['emp_name']) || isset($_SESSION['admin_name'])) {
-            $admin_name = $_SESSION['emp_name'] ?? $_SESSION['admin_name'];
+        if (isset($_SESSION['emp_name']) || isset($_SESSION['created_by'])) {
+            $created_by = $_SESSION['emp_name'] ?? $_SESSION['created_by'];
             $nm = trim($_POST['nm']);
             $mail = $_POST['mail'];
             $num = $_POST['con'];
-            $insert = "INSERT INTO `contact_us`(`cu_name`, `cu_email`, `cu_number`,`admin`) VALUES ('$nm','$mail','$num','$admin_name')";
+            $insert = "INSERT INTO `contact_us`(`cu_name`, `cu_email`, `cu_number`,`created_by`) VALUES ('$nm','$mail','$num','$created_by')";
             $RUn = mysqli_query($con, $insert);
             if (mysqli_affected_rows($con) == 1) {
                 ShowSuccess('Details Sended successfully', 'Congrats!');

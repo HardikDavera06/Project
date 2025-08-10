@@ -33,8 +33,6 @@ Array.from(edits)?.forEach((e) => {
     designation = tr.getElementsByTagName("td")[7].innerText;
     packages = tr.getElementsByTagName("td")[8].innerText;
     unm1.value = name;
-    empContact1.value = contact;
-    empEmail1.value = email;
     jd1.value = jdate;
     dob1.value = dob;
     dep1.value = depart;
@@ -42,9 +40,16 @@ Array.from(edits)?.forEach((e) => {
     package1.value = packages;
     sno.value = y.target.id;
     editID.value = y.target.id;
-    if(designation == "superadmin"){
+    if (designation == "superadmin") {
       editDelete.value = y.target.id;
-    } 
+      empContact1.value = contact;
+      empEmail1.value = email;
+    } else {
+      empContact1.value = contact;
+      empEmail1.value = email;
+      empContact1.disabled = true;
+      empEmail1.disabled = true;
+    }
     //* <---- toggle for open modal -----> */
     $("#EDITmodal").modal("toggle");
   });

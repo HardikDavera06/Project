@@ -1,6 +1,9 @@
 <?php
 session_start();
-if (!isset($_SESSION['admin_name'])) {
+$created_by = '';
+if (isset($_SESSION['admin_name'])) {
+  $created_by = $_SESSION['admin_name'];
+} else {
   header("Location:index2.php");
 }
 require_once "nav.php";
@@ -26,7 +29,6 @@ $upN = false;
 <body>
   <?php
   if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-
     if (isset($_POST['updatePasswordBtn'])) { //* <-- Script for update password -->
       $id = $_POST['passwordID'];
       $department = $_POST['department'];
@@ -44,7 +46,7 @@ $upN = false;
           ShowError('Please Try Another Password', 'Sorry!');
         } else {
           $hash_update_pswd = password_hash($updated_password, PASSWORD_DEFAULT);
-          $updateQuery = "UPDATE `$getTable` SET `password`='$hash_update_pswd' WHERE `id`='$id'"; //* Update password
+          $updateQuery = "UPDATE `$getTable` SET `password`='$hash_update_pswd',`created_by`='$created_by' WHERE `id`='$id'"; //* Update password
           $uptPasswordExecute = mysqli_query($con, $updateQuery);
           if (mysqli_affected_rows($con) == 1) {
             ShowSuccess('Password Updated', 'Successfully!');
@@ -59,14 +61,13 @@ $upN = false;
     if (isset($_POST['sno'])) {
 
       $dateOfBirth1 = $_POST['dob1'];
-      $today = new DateTime();   // Current date
-      $diff = date_diff(date_create($dateOfBirth1), $today);  // Finds the difference
+      $date = $_POST['jd1'];
+      $diff = date_diff(date_create($dateOfBirth1), date_create($date));  // Finds the difference
       $age = $diff->y;   // Gets the year difference (i.e., the age)
   
       if ($age >= 18) {
         $sno = $_POST['sno'];
         $Name = $_POST['unm1'];
-        $date = $_POST['jd1'];
         $depa = $_POST['dep1'];
         $pac = $_POST['package1'];
         $designation1 = $_POST['designation1'];
@@ -78,8 +79,7 @@ $upN = false;
         $nameField = ($depa == "Administration") ? "name" : "Ename";
 
         if (isset($_POST['delete'])) { //* <----- Script For Delete The Employee ------->
-          $id = $_POST['delete'];
-          $delete = "DELETE FROM `$targetTable` WHERE id = '$id'";
+          $delete = "DELETE FROM `$targetTable` WHERE id = '$sno'";
           $RUn = mysqli_query($con, $delete);
           if ($RUn)
             $Del = true;
@@ -89,14 +89,14 @@ $upN = false;
         } else {
           if (isset($_POST['updateBtn'])) { //* <----- Script For Update The Employee -------> 
             $checkExistence = "SELECT * FROM `$targetTable` WHERE `contact` = '$empContact1' OR `email` = '$empEmail1'";
-            $executeExistenceCheck = mysqli_query($con, $checkExistence);
+            $executeExistenceCheck = mysqli_query($con, $checkExistence); 
 
             if (mysqli_num_rows($executeExistenceCheck) > 0) {
-              $updateEmployee = "UPDATE `$targetTable` SET `$nameField` = '$Name',`Jdate` = '$date', `dob`='$dateOfBirth1',`package` = '$pac',`contact`='$empContact1', `email`='$empEmail1',`designation`='$designation1' WHERE `$targetTable`.`id` = '$sno'";
+              $updateEmployee = "UPDATE `$targetTable` SET `$nameField` = '$Name',`Jdate` = '$date', `dob`='$dateOfBirth1',`package` = '$pac',`contact`='$empContact1', `email`='$empEmail1',`designation`='$designation1',`created_by`='$created_by' WHERE `$targetTable`.`id` = '$sno'";
               $updateExecute = mysqli_query($con, $updateEmployee);
             } else {
               $Hashpwd = password_hash('NEXGEN@123', PASSWORD_DEFAULT);
-              $insertNew = "INSERT INTO `$targetTable` (`$nameField`,`password`,`Jdate`,`dob`,`package`,`contact`,`email`,`dep`,`designation`) VALUES ('$Name','$Hashpwd','$date','$dateOfBirth1','$pac','$empContact1','$empEmail1','$depa','$designation1') ";
+              $insertNew = "INSERT INTO `$targetTable` (`$nameField`,`password`,`Jdate`,`dob`,`package`,`contact`,`email`,`dep`,`designation`,`created_by`) VALUES ('$Name','$Hashpwd','$date','$dateOfBirth1','$pac','$empContact1','$empEmail1','$depa','$designation1','$created_by') ";
               $insertExecute = mysqli_query($con, $insertNew);
               if (mysqli_affected_rows($con) == 1) {
                 $deleteFromAnother = "DELETE FROM `$deleteFromTable` WHERE `id` = '$sno'";
@@ -253,8 +253,8 @@ SELECT
   email,
   dep,
   designation,
-  NULL AS admin
-FROM _admin_regi WHERE `dep`='Administration' AND `designation` != 'superadmin'
+  created_by
+FROM _admin_regi WHERE `dep`='Administration' AND `designation` != 'superadmin' AND `created_by`='$created_by'
 
 UNION ALL
 
@@ -263,15 +263,14 @@ SELECT
   Ename AS full_name,
   Jdate,
   DOB AS dob,
-  package,
+  package,  
   contact,
   email,
   dep,
   designation,
-  admin
-FROM _emp_regi
+  created_by
+FROM _emp_regi WHERE `created_by`='$created_by'
 ";
-        ;
         $Run1 = mysqli_query($con, $select);
         if (!$Run1)
           die("Not Working" . mysqli_error($con));

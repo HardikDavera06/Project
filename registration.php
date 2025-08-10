@@ -20,15 +20,15 @@ require_once 'nav.php';
 require_once './assets/showMessage.php';
 
 $inN = false;
-$admin_name = '';
+$created_by = '';
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['add_employe'])) {
         if (isset($_SESSION['admin_login'])) { //* <---- Check Admin Is LoggedIn Or Not ---->
             if (isset($_SESSION['admin_name'])) {
-                $admin_name = $_SESSION['admin_name'];
+                $created_by = $_SESSION['admin_name'];
+                $Jdate = $_POST['jd'];
                 $dateOfBirth = $_POST['dob'];
-                $today = new DateTime();   // Current date
-                $diff = date_diff(date_create($dateOfBirth), $today);  // Finds the difference
+                $diff = date_diff(date_create($dateOfBirth), date_create($Jdate));  // Finds the difference
                 $age = $diff->y;   // Gets the year difference (i.e., the age)
 
                 if ($age >= 18) {
@@ -39,7 +39,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $package = $_POST['package'];
                     $password = $_POST['pwd'];
                     $depart = $_POST['dep'];
-                    $Jdate = $_POST['jd'];
                     $designation = $_POST['designation'];
 
                     if ($Jdate != $dateOfBirth) {
@@ -53,13 +52,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         } else { //* <------ INSERT NEW EMPLOYES ------>
                             $Hashpwd = password_hash($password, PASSWORD_DEFAULT);
                             if ($depart == "Administration") {
-                                $insert = "INSERT INTO `_admin_regi` (`name`,`password`,`Jdate`,`dob`,`package`,`contact`,`email`,`dep`,`designation`) VALUES ('$eName','$Hashpwd','$Jdate','$dateOfBirth','$package','$empContact','$empEmail','$depart','$designation') ";
+                                $insert = "INSERT INTO `_admin_regi` (`name`,`password`,`Jdate`,`dob`,`package`,`contact`,`email`,`dep`,`designation`,`created_by`) VALUES ('$eName','$Hashpwd','$Jdate','$dateOfBirth','$package','$empContact','$empEmail','$depart','$designation','$created_by') ";
                             } else {
-                                $insert = "INSERT INTO `_emp_regi`(`Ename`, `contact`, `email`, `DOB`, `password`, `Jdate`, `dep`,`package`,`admin`,`designation`) VALUES ('$eName','$empContact','$empEmail','$dateOfBirth','$Hashpwd','$Jdate','$depart','$package','$admin_name','$designation')";
+                                $insert = "INSERT INTO `_emp_regi`(`Ename`, `contact`, `email`, `DOB`, `password`, `Jdate`, `dep`,`package`,`created_by`,`designation`) VALUES ('$eName','$empContact','$empEmail','$dateOfBirth','$Hashpwd','$Jdate','$depart','$package','$created_by','$designation')";
                             }
                             $Run = mysqli_query($con, $insert);
                             $inN = true;
-                            if (!$Run)
+                            if (!$Run)  
                                 die("Not Working" . mysqli_error($con));
                             if ($inN == true) {
                                 ShowSuccess('Employe Registerd Successfully', 'Congrats!');

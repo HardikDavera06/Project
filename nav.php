@@ -86,9 +86,7 @@ require_once "config.php";
                             <a class="nav-link linkU" href="employe.php" aria-current="page">Employes List</a>
                         </li>
                     <?php } ?>
-                    <li class="nav-item mx-2">
-                        <a class="nav-link linkU" href="about.php" aria-current="page">Contact Us</a>
-                    </li>
+
                     <!--//* If Admin LoggedIn Then Show Admin's Details  -->
                     <?php if (isset($_SESSION['admin_login']) || isset($_SESSION['emp_login'])) { ?>
                         <div class="dropdown">
@@ -109,13 +107,18 @@ require_once "config.php";
                                     </li>
                                 <?php } else { ?>
                                     <li class="nav-item">
-                                        <a class="nav-link linkU" href="applyLeave.php?leaveStatus=true" aria-current="page">Leave
+                                        <a class="nav-link linkU" href="applyLeave.php?leaveStatus=true"
+                                            aria-current="page">Leave
                                             Status</a>
                                     </li>
                                 <?php } ?>
                             </ul>
                         </div>
                     <?php } ?>
+
+                    <li class="nav-item mx-2">
+                        <a class="nav-link linkU" href="about.php" aria-current="page">Contact Us</a>
+                    </li>   
                 </ul>
                 <?php
                 if (isset($_SESSION['admin_login']) || isset($_SESSION['emp_login'])) { //* <-- If Admin LoggedIn Then Show Admin's Details -->
