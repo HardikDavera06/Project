@@ -1,9 +1,75 @@
 <?php
-function ShowError($msg,$subMsg)
+function getQuery($role, $created_by)
 {
-?>
+    $query = "";
+    if ($role == "superadmin") {
+        $query = "
+        SELECT 
+        id,
+        name AS full_name,
+        Jdate,
+        dob,
+        package,
+        contact,
+        email,
+        dep,
+        designation,
+        created_by
+        FROM _admin_regi WHERE `dep`='Administration' AND `designation` != 'superadmin'
+
+        UNION ALL
+
+        SELECT 
+        id,
+        Ename AS full_name,
+        Jdate,
+        DOB AS dob,
+        package,  
+        contact,
+        email,
+        dep,
+        designation,
+        created_by
+        FROM _emp_regi";
+    } else {
+        $query = "
+        SELECT 
+        id,
+        name AS full_name,
+        Jdate,
+        dob,
+        package,
+        contact,
+        email,
+        dep,
+        designation,
+        created_by
+        FROM _admin_regi WHERE `dep`='Administration' AND `designation` != 'superadmin' AND `created_by`='$created_by'
+
+        UNION ALL
+
+        SELECT 
+        id,
+        Ename AS full_name,
+        Jdate,
+        DOB AS dob,
+        package,  
+        contact,
+        email,
+        dep,
+        designation,
+        created_by
+        FROM _emp_regi WHERE `created_by`='$created_by'
+        ";
+    }
+    return $query;
+}
+
+function ShowError($msg, $subMsg)
+{
+    ?>
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             toastr.options = {
                 "closeButton": true,
                 "debug": false,
@@ -22,13 +88,13 @@ function ShowError($msg,$subMsg)
             toastr.error("<?php echo $msg; ?>", "<?php echo $subMsg ?>");
         });
     </script>
-<?php
+    <?php
 }
-function ShowInfo($msg,$subMsg)
+function ShowInfo($msg, $subMsg)
 {
-?>
+    ?>
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             toastr.options = {
                 "closeButton": true,
                 "debug": false,
@@ -47,13 +113,13 @@ function ShowInfo($msg,$subMsg)
             toastr.info("<?php echo $msg; ?>", "<?php echo $subMsg ?>");
         });
     </script>
-<?php
+    <?php
 }
-function ShowSuccess($msg,$subMsg)
+function ShowSuccess($msg, $subMsg)
 {
-?>
+    ?>
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             toastr.options = {
                 "closeButton": true,
                 "debug": false,
@@ -72,6 +138,6 @@ function ShowSuccess($msg,$subMsg)
             toastr.success("<?php echo $msg; ?>", "<?php echo $subMsg ?>");
         });
     </script>
-<?php
+    <?php
 }
 ?>

@@ -1,8 +1,9 @@
 <?php
 session_start();
 $created_by = '';
-if (isset($_SESSION['admin_name'])) {
+if (isset($_SESSION['admin_name']) || isset($_SESSION['designation'])) {
   $created_by = $_SESSION['admin_name'];
+  $designationFromLogin = $_SESSION['designation'];
 } else {
   header("Location:index2.php");
 }
@@ -88,11 +89,10 @@ $upN = false;
           }
         } else {
           if (isset($_POST['updateBtn'])) { //* <----- Script For Update The Employee -------> 
-            $checkExistence = "SELECT * FROM `$targetTable` WHERE `contact` = '$empContact1' OR `email` = '$empEmail1'";
-            $executeExistenceCheck = mysqli_query($con, $checkExistence); 
-
+            $checkExistence = "SELECT * FROM `$targetTable` WHERE `id`='$sno'";
+            $executeExistenceCheck = mysqli_query($con, $checkExistence);
             if (mysqli_num_rows($executeExistenceCheck) > 0) {
-              $updateEmployee = "UPDATE `$targetTable` SET `$nameField` = '$Name',`Jdate` = '$date', `dob`='$dateOfBirth1',`package` = '$pac',`contact`='$empContact1', `email`='$empEmail1',`designation`='$designation1',`created_by`='$created_by' WHERE `$targetTable`.`id` = '$sno'";
+              $updateEmployee = "UPDATE `$targetTable` SET `$nameField` = '$Name',`Jdate` = '$date', `dob`='$dateOfBirth1',`package` = '$pac',`contact`='$empContact1', `email`='$empEmail1',`designation`='$designation1' WHERE `$targetTable`.`id` = '$sno'";
               $updateExecute = mysqli_query($con, $updateEmployee);
             } else {
               $Hashpwd = password_hash('NEXGEN@123', PASSWORD_DEFAULT);
@@ -103,7 +103,6 @@ $upN = false;
                 $deleteExecute = mysqli_query($con, $deleteFromAnother);
               }
             }
-
             ShowSuccess('Employee Updated', 'Successfully!');
           }
         }
@@ -111,7 +110,6 @@ $upN = false;
         ShowError('Enter Valid Date of Birth', 'Please!');
       }
     }
-
   }
   ?>
 
@@ -191,11 +189,19 @@ $upN = false;
               <div class="col-md-6">
                 <label for="dep1" class="mt-3 text-dark"> Department :</label>
                 <select name="dep1" id="dep1" class="form-control">
+                  <?php
+                    if (isset($_SESSION['designation'])) {
+                      if ($_SESSION['designation'] == "superadmin") {
+                        ?>
+                          <option value="Administration">Administration</option>
+                        <?php
+                      }
+                    }
+                  ?>
                   <option value="Marketing">Marketing</option>
                   <option value="Sales">Sales</option>
                   <option value="Product">Product</option>
                   <option value="Human_Resource">Human Resource</option>
-                  <option value="Administration">Administration</option>
                 </select>
               </div>
               <div class="col-md-6">
@@ -242,35 +248,7 @@ $upN = false;
       </thead>
       <tbody>
         <?php
-        $select = "
-SELECT 
-  id,
-  name AS full_name,
-  Jdate,
-  dob,
-  package,
-  contact,
-  email,
-  dep,
-  designation,
-  created_by
-FROM _admin_regi WHERE `dep`='Administration' AND `designation` != 'superadmin' AND `created_by`='$created_by'
-
-UNION ALL
-
-SELECT 
-  id,
-  Ename AS full_name,
-  Jdate,
-  DOB AS dob,
-  package,  
-  contact,
-  email,
-  dep,
-  designation,
-  created_by
-FROM _emp_regi WHERE `created_by`='$created_by'
-";
+        $select = getQuery($designationFromLogin, $created_by);
         $Run1 = mysqli_query($con, $select);
         if (!$Run1)
           die("Not Working" . mysqli_error($con));

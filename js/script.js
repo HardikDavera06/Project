@@ -42,14 +42,9 @@ Array.from(edits)?.forEach((e) => {
     editID.value = y.target.id;
     if (designation == "superadmin") {
       editDelete.value = y.target.id;
-      empContact1.value = contact;
-      empEmail1.value = email;
-    } else {
-      empContact1.value = contact;
-      empEmail1.value = email;
-      empContact1.disabled = true;
-      empEmail1.disabled = true;
     }
+    empContact1.value = contact;
+    empEmail1.value = email;
     //* <---- toggle for open modal -----> */
     $("#EDITmodal").modal("toggle");
   });

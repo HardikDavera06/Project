@@ -70,11 +70,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </table>
                 <?php
             } else {
-               ?>
+                ?>
                 <script>
                     window.location.href = 'index2.php';
                 </script>
-               <?php
+                <?php
             }
         }
     }
@@ -84,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <div class="apply-leave mt-5">
                 <div class="container mt-5">
                     <h2>Leave Application</h2>
-                    <form method="post" action="applyLeave.php">
+                    <form method="post" action="applyLeave.php?apply=true">
                         <label for="leave_type">Leave Type</label>
                         <select id="leave_type" name="leave_type" required>
                             <option value="">Select Leave Type</option>
