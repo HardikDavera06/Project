@@ -1,10 +1,16 @@
 <?php
 session_start();
 $applicant = '';
+$designation = '';
+$department = '';
+if (isset($_SESSION['designation']) || isset($_SESSION['department'])) {
+    $designation = $_SESSION['designation'];
+    $department = $_SESSION['department'];
+}
 if (isset($_SESSION['admin_name'])) {
-    $applicant = 'ADM_' . $_SESSION['admin_name'];
+    $applicant = $_SESSION['admin_name'];
 } elseif (isset($_SESSION['emp_name'])) {
-    $applicant = 'EMP_' . $_SESSION['emp_name'];
+    $applicant = $_SESSION['emp_name'];
 } else {
     header("Location:index2.php");
 }
@@ -20,6 +26,8 @@ require_once './assets/showMessage.php';
     <link rel="stylesheet" href=" https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <title>Apply Leave</title>
     <link rel="stylesheet" href="./css/leave.css">
+    <link rel="stylesheet" href="./css/boot.css">
+    <link rel="stylesheet" href="./css/toastr.css" />
     <script src="./js/jquery.min.js"></script>
     <script src="./js/toastr.min.js"></script>
 </head>
@@ -36,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             ShowError('Enter Valid Dates', 'Oops!');
         } else {
             // Insert leave application into the database
-            $insertLeave = "INSERT INTO `_leave_application` (`applicant`, `leave_type`, `reason`, `from_date`, `to_date`) VALUES ('$applicant', '$leaveType', '$reason', '$fromDate', '$toDate')";
+            $insertLeave = "INSERT INTO `_leave_application` (`applicant`,`designation`,`department`,`leave_type`, `reason`, `from_date`, `to_date`) VALUES ('$applicant','$designation','$department','$leaveType', '$reason', '$fromDate', '$toDate')";
             if (mysqli_query($con, $insertLeave)) {
                 ShowSuccess('Leave application submitted', 'Successfully!');
             } else {
@@ -52,7 +60,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <?php
     if (isset($_GET['approve'])) {
         if ($_GET['approve']) {
-            if (isset($_SESSION['designation']) && ($_SESSION['designation'] == 'superadmin' || $_SESSION['designation'] == 'Admin')) {
+            if (isset($_GET['status']) && $_GET['status'] && isset($_GET['id'])) {
+                $leaveId = $_GET['id'] ?? null; // Assuming you pass leave_id in
+                $status = $_GET['status'] ?? 0; // Assuming you pass leave_id in
+                $updateLeave = "UPDATE `_leave_application` SET `status`='$status',`accepted_by`='$applicant' WHERE `id`='$leaveId'";
+                $executeUpdate = mysqli_query($con, $updateLeave);
+                if (mysqli_affected_rows($con) > 0) {
+                    ShowSuccess('Leave application updated successfully', 'Success');
+                }
+            }
+            if (isset($_SESSION['department']) && ($_SESSION['department'] == 'Administration')) {
+
+                $getLeaves = "SELECT * FROM `_leave_application` WHERE `designation` != 'superadmin'";
+                $execute = mysqli_query($con, $getLeaves);
                 ?>
                 <table class="container mt-5 table table-hover table-striped">
                     <thead>
@@ -63,19 +83,64 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <th>Leave Reason</th>
                             <th>From</th>
                             <th>To</th>
-                            <th>Action</th>
+                            <th>Status</th>
                         </tr>
                     </thead>
-                    <tbody></tbody>
+                    <tbody>
+                        <?php
+                        $no = 1;
+                        while ($row = mysqli_fetch_assoc($execute)) {
+                            ?>
+                            <tr>
+                                <td><?= $no; ?></td>
+                                <td><?= $row['applicant'] ?></td>
+                                <td><?= $row['leave_type'] ?></td>
+                                <td><?= $row['reason'] ?></td>
+                                <td><?= $row['from_date'] ?></td>
+                                <td><?= $row['to_date'] ?></td>
+                                <?php
+                                if ($department == "Administration") {
+                                    ?>
+                                    <td>
+                                        <?php
+                                        if ($row['status'] == 1) {
+                                            ?>
+                                            <span class="badge bg-success p-2">Accepted</span>
+                                        </td>
+                                        <?php
+                                        } else if ($row['status'] == 2) {
+                                            ?>
+                                            <span class="badge bg-danger p-2">Rejected</span>
+                                            </td>
+                                        <?php
+                                        } else {
+                                            ?>
+                                            <a href="applyLeave.php?approve=true&id=<?= $row['id'] ?>&status=1"
+                                                class="badge bg-success fs-6 text-decoration-none p-2">Accept</a>
+                                            <a href="applyLeave.php?approve=true&id=<?= $row['id'] ?>&status=2"
+                                                class="badge bg-danger fs-6 text-decoration-none p-2">Reject</a>
+                                            </td>
+                                        <?php
+                                        }
+                                }
+                                ?>
+                            </tr>
+                            <?php
+                            $no++;
+                        }
+                        ?>
+                    </tbody>
                 </table>
                 <?php
             } else {
-                ?>
-                <script>
-                    window.location.href = 'index2.php';
-                </script>
-                <?php
+                header("Location:index2.php");
             }
+        } else {
+            ?>
+            <script>
+                window.location.href = 'index2.php';
+            </script>
+            <?php
         }
     }
     if (isset($_GET['apply'])) {
@@ -117,11 +182,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
     ?>
-    <script src="./js/bootstrap.bundle.min.js"></script>
     <script src="./js/jquery.min.js"></script>
-    <script src="./js/script.js"></script>
     <link rel="stylesheet" href="./css/toastr.css" />
-    <?php require_once "footer.php" ?>
+    <script src="./js/bootstrap.bundle.min.js"></script>
+    <script src="./js/script.js"></script>
 </body>
 
 </html>

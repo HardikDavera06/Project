@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 03, 2025 at 03:40 PM
+-- Generation Time: Aug 15, 2025 at 03:30 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -32,14 +32,14 @@ CREATE TABLE `contact_us` (
   `cu_name` varchar(100) NOT NULL,
   `cu_email` varchar(100) NOT NULL,
   `cu_number` int(15) NOT NULL,
-  `admin` varchar(30) NOT NULL
+  `created_by` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `contact_us`
 --
 
-INSERT INTO `contact_us` (`id`, `cu_name`, `cu_email`, `cu_number`, `admin`) VALUES
+INSERT INTO `contact_us` (`id`, `cu_name`, `cu_email`, `cu_number`, `created_by`) VALUES
 (7, 'hardik11', 'hardik@gmail.com', 2147483647, 'superadmin'),
 (8, 'hardik11', 'dfdf@gmail.com', 1122334454, ''),
 (9, 'hardik11', 'dfdf@gmail.com', 1122334454, 'fourth');
@@ -60,17 +60,16 @@ CREATE TABLE `_admin_regi` (
   `contact` varchar(15) NOT NULL,
   `email` varchar(150) NOT NULL,
   `dep` varchar(50) NOT NULL,
-  `designation` varchar(20) NOT NULL
+  `designation` varchar(20) NOT NULL,
+  `created_by` varchar(40) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `_admin_regi`
 --
 
-INSERT INTO `_admin_regi` (`id`, `name`, `password`, `Jdate`, `dob`, `package`, `contact`, `email`, `dep`, `designation`) VALUES
-(2, 'superadmin', '$2y$10$i8T1O8LmOIv7hmZz579hROpzjgcBtVJPuPXXW5nv6noXB//5LWSuy', NULL, NULL, 0, '1111111111', 'daverahardik5@gmail.com', 'Administration', 'superadmin'),
-(10, 'third', '$2y$10$HcrKtL65ND7PVxO0g8m21ObfCgmmKGjjGNxM9kjl4praIp65HAHum', '2025-07-20', '2001-11-11', 1111111111, '6666666666', 'third@gmail.com', 'Administration', 'Head of product'),
-(12, 'second', '$2y$10$XQ4fQzYYNgIW1zVrEhLgreQWXCCDhUGwivFpXBfH/5FVNzG2PVCS.', '2002-01-01', '2001-01-20', 1000000000, '7777777777', 'askm@masn.com', 'Administration', 'Admin');
+INSERT INTO `_admin_regi` (`id`, `name`, `password`, `Jdate`, `dob`, `package`, `contact`, `email`, `dep`, `designation`, `created_by`) VALUES
+(2, 'superadmin', '$2y$10$i8T1O8LmOIv7hmZz579hROpzjgcBtVJPuPXXW5nv6noXB//5LWSuy', NULL, NULL, 0, '1111111111', 'daverahardik5@gmail.com', 'Administration', 'superadmin', NULL);
 
 -- --------------------------------------------------------
 
@@ -88,7 +87,7 @@ CREATE TABLE `_emp_regi` (
   `Jdate` date NOT NULL,
   `dep` varchar(100) NOT NULL,
   `package` int(10) NOT NULL,
-  `admin` varchar(150) NOT NULL,
+  `created_by` varchar(40) DEFAULT NULL,
   `designation` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -96,9 +95,7 @@ CREATE TABLE `_emp_regi` (
 -- Dumping data for table `_emp_regi`
 --
 
-INSERT INTO `_emp_regi` (`id`, `Ename`, `contact`, `email`, `DOB`, `password`, `Jdate`, `dep`, `package`, `admin`, `designation`) VALUES
-(23, 'fourth', '2222222222', 'fourth@gmail.com', '2003-02-22', '$2y$10$52vaIdfRwI0XP9ZAshRXG.TByBPpMMyMw6wNWsB1QFBBPMIwMenuy', '2025-01-28', 'Sales', 1111111111, '', 'Head'),
-(25, 'Seventh10', '9999999999', 'seventh78@gmail.com', '2006-01-01', '$2y$10$8oUaW4d8.O9roEHdoukhDOCfgiIm1wJC97XiVgPCBbaePY.rM3FMu', '2006-11-11', 'Product', 1000000000, '', 'Head'),
+INSERT INTO `_emp_regi` (`id`, `Ename`, `contact`, `email`, `DOB`, `password`, `Jdate`, `dep`, `package`, `created_by`, `designation`) VALUES
 (29, 'sdsdsd', '1111111110', 'third2@gmail.com', '2006-02-22', '$2y$10$EAPNtLeRdTW23lqrobVYkOq/vHshFdDmJ9mrE6lIlTO3XqUlkmYq.', '2002-11-11', 'Sales', 1000000000, 'superadmin', 'head');
 
 -- --------------------------------------------------------
@@ -184,6 +181,14 @@ ALTER TABLE `_leave_application`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 COMMIT;
 
+
+ALTER TABLE `_emp_regi` ADD `updated_by` VARCHAR(40) NULL DEFAULT NULL AFTER `created_by`;
+
+ALTER TABLE `_admin_regi` ADD `updated_by` VARCHAR(40) NULL DEFAULT NULL AFTER `created_by`;
+
+ALTER TABLE `_leave_application` ADD `designation` VARCHAR(40) NULL DEFAULT NULL AFTER `applicant`, ADD `department` VARCHAR(40) NULL DEFAULT NULL AFTER `designation`;
+
+ALTER TABLE `_leave_application` CHANGE `status` `status` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '0' COMMENT '1:accepted , 0:pending , 2:rejected';
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

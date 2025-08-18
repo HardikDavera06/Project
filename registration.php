@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $package = $_POST['package'];
                     $password = $_POST['pwd'];
                     $depart = $_POST['dep'];
-                    $designation = $_POST['designation'];
+                    $designation = ucwords($_POST['designation']);
 
                     if ($Jdate != $dateOfBirth) {
                         $select = "SELECT email, contact  FROM _emp_regi WHERE email='$empEmail' OR contact='$empContact'
@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         $run = mysqli_query($con, $select);
                         $NumExitscheck = mysqli_num_rows($run);
                         if ($NumExitscheck > 0) {
-                            ShowError('Employee Already Registed', 'Sorry!');
+                            ShowError('Enter Another E-mail and Contact Number', 'Please!');
                         } else { //* <------ INSERT NEW EMPLOYES ------>
                             $Hashpwd = password_hash($password, PASSWORD_DEFAULT);
                             if ($depart == "Administration") {

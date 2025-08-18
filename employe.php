@@ -47,7 +47,7 @@ $upN = false;
           ShowError('Please Try Another Password', 'Sorry!');
         } else {
           $hash_update_pswd = password_hash($updated_password, PASSWORD_DEFAULT);
-          $updateQuery = "UPDATE `$getTable` SET `password`='$hash_update_pswd',`created_by`='$created_by' WHERE `id`='$id'"; //* Update password
+          $updateQuery = "UPDATE `$getTable` SET `password`='$hash_update_pswd',`updated_by`='$created_by' WHERE `id`='$id'"; //* Update password
           $uptPasswordExecute = mysqli_query($con, $updateQuery);
           if (mysqli_affected_rows($con) == 1) {
             ShowSuccess('Password Updated', 'Successfully!');
@@ -92,7 +92,7 @@ $upN = false;
             $checkExistence = "SELECT * FROM `$targetTable` WHERE `id`='$sno'";
             $executeExistenceCheck = mysqli_query($con, $checkExistence);
             if (mysqli_num_rows($executeExistenceCheck) > 0) {
-              $updateEmployee = "UPDATE `$targetTable` SET `$nameField` = '$Name',`Jdate` = '$date', `dob`='$dateOfBirth1',`package` = '$pac',`contact`='$empContact1', `email`='$empEmail1',`designation`='$designation1' WHERE `$targetTable`.`id` = '$sno'";
+              $updateEmployee = "UPDATE `$targetTable` SET `$nameField` = '$Name',`Jdate` = '$date', `dob`='$dateOfBirth1',`package` = '$pac',`contact`='$empContact1', `email`='$empEmail1',`designation`='$designation1',`updated_by`='$created_by' WHERE `$targetTable`.`id` = '$sno'";
               $updateExecute = mysqli_query($con, $updateEmployee);
             } else {
               $Hashpwd = password_hash('NEXGEN@123', PASSWORD_DEFAULT);
@@ -190,13 +190,13 @@ $upN = false;
                 <label for="dep1" class="mt-3 text-dark"> Department :</label>
                 <select name="dep1" id="dep1" class="form-control">
                   <?php
-                    if (isset($_SESSION['designation'])) {
-                      if ($_SESSION['designation'] == "superadmin") {
-                        ?>
-                          <option value="Administration">Administration</option>
-                        <?php
-                      }
+                  if (isset($_SESSION['designation'])) {
+                    if ($_SESSION['designation'] == "superadmin") {
+                      ?>
+                  <option value="Administration">Administration</option>
+                  <?php
                     }
+                  }
                   ?>
                   <option value="Marketing">Marketing</option>
                   <option value="Sales">Sales</option>
