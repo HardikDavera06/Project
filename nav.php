@@ -7,6 +7,9 @@ require_once "config.php";
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <link rel="stylesheet" href="./css/nav1.css">
     <link rel="stylesheet" href="./css/boot.css">
     <link rel="stylesheet" href=" https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -31,7 +34,11 @@ require_once "config.php";
     if (isset($_SESSION['admin_login']) || isset($_SESSION['emp_login'])) {
         $select = "SELECT * FROM `$table` WHERE `$tblNameColumn`='$userName'";
         $select_query = $con->query($select);
-        $row1 = mysqli_fetch_assoc($select_query);
+        if (mysqli_num_rows($select_query) > 0) {
+            $row1 = mysqli_fetch_assoc($select_query);
+        } else {
+            header("Location: logout.php");
+        }
     }
     ?>
     <!--//* Modal For Display The Admin's Details -->
@@ -99,7 +106,7 @@ require_once "config.php";
                                 Leave
                             </li>
 
-                            <ul class=" p-2 dropdown-menu">
+                            <ul class="p-2 dropdown-menu">
                                 <li>
                                     <a class="nav-link linkU" href="applyLeave.php?apply=true" aria-current="page">Apply
                                         Leave</a>
@@ -107,16 +114,15 @@ require_once "config.php";
                                 <?php if ($department == "Administration") { ?>
                                     <li>
                                         <a class="nav-link linkU" href="applyLeave.php?approve=true" aria-current="page"
-                                            style="font-size:14px">
+                                            style="font-size:16px">
                                             Leave Application</a>
                                     </li>
-                                <?php } else { ?>
-                                    <li class="nav-item">
-                                        <a class="nav-link linkU" href="applyLeave.php?leaveStatus=true"
-                                            aria-current="page">Leave
-                                            Status</a>
-                                    </li>
                                 <?php } ?>
+                                <li class="nav-item">
+                                    <a class="nav-link linkU" href="applyLeave.php?leaveStatus=true"
+                                        aria-current="page">Leave
+                                        Status</a>
+                                </li>
                             </ul>
                         </div>
                     <?php } ?>

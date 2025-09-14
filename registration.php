@@ -4,6 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>EMPLOYE | REGISTRATION</title>
     <link rel="stylesheet" href="./css/employe.css">
     <script src="./js/jquery.min.js"></script>
@@ -58,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             }
                             $Run = mysqli_query($con, $insert);
                             $inN = true;
-                            if (!$Run)  
+                            if (!$Run)
                                 die("Not Working" . mysqli_error($con));
                             if ($inN == true) {
                                 ShowSuccess('Employe Registerd Successfully', 'Congrats!');
@@ -128,7 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <div class="row">
                 <div class="col-md-6">
                     <label for="dep" class="mt-3 "> &nbsp;Entre Department :</label>
-                    <select name="dep" id="dep" class="in form-control mt-1 p-2">
+                    <select name="dep" id="dep" class="in form-control mt-1 p-2" required>
                         <option value="Marketing">Marketing</option>
                         <option value="Sales">Sales</option>
                         <option value="Product">Product</option>

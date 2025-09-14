@@ -47,10 +47,7 @@ tbody .text-center .forgetPassword {
   cursor: pointer;
   transition: all 0.3s ease;
   background-color: #ffffff;
-  font-size: 15px;
-  letter-spacing: 1px;
-  border: 0.5px solid #4158d0;
-  font-weight: 500;
+  border: 0.5px solid #7284db;
 }
 
 tbody .text-center .editData:hover,
@@ -58,7 +55,18 @@ tbody .text-center .forgetPassword:hover {
   background: linear-gradient(-205deg, #c850c0, #4158d0);
   color: whitesmoke;
   transform: scale(0.97);
-  font-weight: bold;
+}
+
+tbody .text-center .editLeave {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: #ffffff;
+}
+
+tbody .text-center .editLeave:hover {
+  background: linear-gradient(-205deg, #c850c0, #4158d0);
+  color: whitesmoke;
+  transform: scale(0.97);
 }
 
 .dialog {
@@ -84,3 +92,4 @@ tbody .text-center .forgetPassword:hover {
   letter-spacing: 2px;
   color: #7e22ce;
 }
+

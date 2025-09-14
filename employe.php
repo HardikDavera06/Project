@@ -20,8 +20,10 @@ $upN = false;
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>EMPLOYE | EMPLOYE</title>
-  <link rel="stylesheet" href="https://cdn.datatables.net/2.0.7/css/dataTables.dataTables.css" />
   <link rel="stylesheet" href="./css/employe.css" />
   <script src="./js/jquery.min.js"></script>
   <script src="./js/toastr.min.js"></script>
@@ -96,7 +98,7 @@ $upN = false;
               $updateExecute = mysqli_query($con, $updateEmployee);
             } else {
               $Hashpwd = password_hash('NEXGEN@123', PASSWORD_DEFAULT);
-              $insertNew = "INSERT INTO `$targetTable` (`$nameField`,`password`,`Jdate`,`dob`,`package`,`contact`,`email`,`dep`,`designation`,`created_by`) VALUES ('$Name','$Hashpwd','$date','$dateOfBirth1','$pac','$empContact1','$empEmail1','$depa','$designation1','$created_by') ";
+              $insertNew = "INSERT INTO `$targetTable` (`$nameField`,`password`,`Jdate`,`dob` ,`package`,`contact`,`email`,`dep`,`designation`,`created_by`) VALUES ('$Name','$Hashpwd','$date','$dateOfBirth1','$pac','$empContact1','$empEmail1','$depa','$designation1','$created_by') ";
               $insertExecute = mysqli_query($con, $insertNew);
               if (mysqli_affected_rows($con) == 1) {
                 $deleteFromAnother = "DELETE FROM `$deleteFromTable` WHERE `id` = '$sno'";
@@ -160,16 +162,16 @@ $upN = false;
             <input type="hidden" name="sno" id="sno">
 
             <label for="unm1" class="text-dark"> Employe Name :</label>
-            <input type="text" name="unm1" class="form-control" id="unm1">
+            <input type="text" name="unm1" class="form-control" id="unm1" required>
 
             <div class="row">
               <div class="col-md-6">
                 <label for="empEmail1" class="mt-3 text-dark"> Employee Email :</label>
-                <input type="email" name="empEmail1" class="form-control" id="empEmail1">
+                <input type="email" name="empEmail1" class="form-control" id="empEmail1" required>
               </div>
               <div class="col-md-6">
                 <label for="empContact1" class="mt-3 text-dark"> Employee Contact No. :</label>
-                <input type="text" name="empContact1" maxlength="10" class="form-control" id="empContact1">
+                <input type="text" name="empContact1" maxlength="10" class="form-control" id="empContact1" required>
               </div>
             </div>
 
@@ -188,7 +190,7 @@ $upN = false;
             <div class="row">
               <div class="col-md-6">
                 <label for="dep1" class="mt-3 text-dark"> Department :</label>
-                <select name="dep1" id="dep1" class="form-control">
+                <select name="dep1" id="dep1" class="form-control" required>
                   <?php
                   if (isset($_SESSION['designation'])) {
                     if ($_SESSION['designation'] == "superadmin") {
@@ -218,7 +220,8 @@ $upN = false;
             </button>
             <?php if (isset($_SESSION['designation']) && $_SESSION['designation'] == "superadmin") { ?>
             <button class="btn btn-danger btn-sm fw-3 rounded-2 " name="delete" id="editDelete"
-              style="letter-spacing:1px;">
+              style="letter-spacing:1px;"
+              onclick="if(confirm('Are you sure you want to delete?')) return true;else return false;">
               Delete
             </button>
             <?php } ?>
@@ -228,88 +231,96 @@ $upN = false;
     </div>
   </div>
   <div>
-    <div class="tb container mt-5 mb-5">
+    <div class="tb container-fluid mx-3 mt-4 mb-5">
       <h1 class="fw-semibold mb-1">Employes&nbsp; Detail</h1>
     </div>
-    <table class="container table table-hover table-striped">
-      <thead>
-        <tr>
-          <th>Serial No.</th>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Contact No.</th>
-          <th>Joing Date</th>
-          <th>Date of Birth</th>
-          <th>Department</th>
-          <th>Designation</th>
-          <th>Package</th>
-          <th class="text-center">Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <?php
-        $select = getQuery($designationFromLogin, $created_by);
-        $Run1 = mysqli_query($con, $select);
-        if (!$Run1)
-          die("Not Working" . mysqli_error($con));
-        $n = 1;
-        while ($row = mysqli_fetch_assoc($Run1)) {
+    <div class="container-fluid px-4 text-center rounded-4">
+      <table id="employeTable" class="border table table-hover table-responsive table-striped ">
+        <thead>
+          <tr>
+            <th>Serial No.</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Contact No.</th>
+            <th>Joing Date</th>
+            <th>Date of Birth</th>
+            <th>Department</th>
+            <th>Designation</th>
+            <th>Package</th>
+            <th class="text-center">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php
+          $select = getQuery($designationFromLogin, $created_by);
+          $Run1 = mysqli_query($con, $select);
+          if (!$Run1)
+            die("Not Working" . mysqli_error($con));
+          $n = 1;
+          while ($row = mysqli_fetch_assoc($Run1)) {
+            ?>
+          <tr>
+            <td>
+              <?php echo $n; ?>
+            </td>
+            <td>
+              <?php echo $row['full_name']; ?>
+            </td>
+            <td>
+              <?php echo $row['email']; ?>
+            </td>
+            <td>
+              <?php echo $row['contact']; ?>
+            </td>
+            <td>
+              <?php echo $row['Jdate']; ?>
+            </td>
+            <td>
+              <?php echo $row['dob']; ?>
+            </td>
+            <td>
+              <?php echo $row['dep']; ?>
+            </td>
+            <td>
+              <?php echo $row['designation']; ?>
+            </td>
+            <td>
+              <?php echo $row['package']; ?>
+            </td>
+            <td class="text-center">
+              <div class="row m-2">
+                <div class="col-md-6">
+                  <button class="editData btn btn-sm" id="<?php echo $row['id']; ?>" title="Edit Information"><i
+                      class="fa fa-edit"></i></button>
+                </div>
+                <div class="col-md-6">
+                  <button class="forgetPassword btn btn-sm" style="transform:rotate(90deg);"
+                    id="<?php echo $row['id']; ?>" title="Forget Password"><i class="fa fa-sliders"></i></button>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <?php
+          $n++;
+          }
           ?>
-        <tr>
-          <td>
-            <?php echo $n; ?>
-          </td>
-          <td>
-            <?php echo $row['full_name']; ?>
-          </td>
-          <td>
-            <?php echo $row['email']; ?>
-          </td>
-          <td>
-            <?php echo $row['contact']; ?>
-          </td>
-          <td>
-            <?php echo $row['Jdate']; ?>
-          </td>
-          <td>
-            <?php echo $row['dob']; ?>
-          </td>
-          <td>
-            <?php echo $row['dep']; ?>
-          </td>
-          <td>
-            <?php echo $row['designation']; ?>
-          </td>
-          <td>
-            <?php echo $row['package']; ?>
-          </td>
-          <td class="text-center">
-            <div class="row">
-              <div class="col-md-6">
-                <button class="editData btn" id="<?php echo $row['id']; ?>">Profile</button>
-              </div>
-              <div class="col-md-6">
-                <button class="forgetPassword btn" id="<?php echo $row['id']; ?>">Forget</button>
-              </div>
-            </div>
-          </td>
-
-        </tr>
-        <?php
-        $n++;
-        }
-        ?>
-      </tbody>
-    </table>
+        </tbody>
+      </table>
+    </div>
   </div>
 
   <!--//* Source files for jqueryCDN and other CDN -->
   <script src="./js/jquery.min.js"></script>
   <script src="./js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdn.datatables.net/2.0.7/js/dataTables.js"></script>
+  <script src="./js/dataTables.min.js"></script>
+  <script src="./js/dataTables.bootstrap5.js"></script>
   <link rel="stylesheet" href="./css/toastr.css" />
   <script src="./js/script.js"></script>
-
+  <script>
+    let employeTable = new DataTable("#employeTable", {
+      responsive: true,
+    });
+  </script>
 </body>
 
 </html>
