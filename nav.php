@@ -125,11 +125,10 @@ require_once "config.php";
                                 </li>
                             </ul>
                         </div>
+                        <li class="nav-item mx-2">
+                            <a class="nav-link linkU" href="about.php" aria-current="page">Contact Us</a>
+                        </li>
                     <?php } ?>
-
-                    <li class="nav-item mx-2">
-                        <a class="nav-link linkU" href="about.php" aria-current="page">Contact Us</a>
-                    </li>
                 </ul>
                 <?php
                 if (isset($_SESSION['admin_login']) || isset($_SESSION['emp_login'])) { //* <-- If Admin LoggedIn Then Show Admin's Details -->

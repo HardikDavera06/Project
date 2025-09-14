@@ -96,19 +96,21 @@ function ShowInfo($msg, $subMsg)
     <script>
         $(document).ready(function () {
             toastr.options = {
-                "closeButton": true,
+                "closeButton": true,          // Show close button
                 "debug": false,
-                "newestOnTop": true,
-                "preventDuplicates" = true;
+                "newestOnTop": true,          // Keep the newest toastr on top
+                "progressBar": true,          // Show progress bar
+                "positionClass": "toast-top-right", // Positionof toastr
+                "preventDuplicates": false,   // Allow multiple toastr messages
                 "onclick": null,
-                "showDuration": "100",
+                "showDuration": "300",
                 "hideDuration": "1000",
-                "timeOut": "5000",
+                "timeOut": "5000",            // Auto close after 5s
                 "extendedTimeOut": "1000",
                 "showEasing": "swing",
                 "hideEasing": "linear",
-                "showMethod": "show",
-                "hideMethod": "hide"
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
             }
             toastr.info("<?php echo $msg; ?>", "<?php echo $subMsg ?>");
         });
