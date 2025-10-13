@@ -12,7 +12,10 @@ require_once "config.php";
     <meta http-equiv="Expires" content="0">
     <link rel="stylesheet" href="./css/nav1.css">
     <link rel="stylesheet" href="./css/boot.css">
-    <link rel="stylesheet" href=" https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="./assets/fontawesome/fontawesome-free-7.1.0-web/css/all.css">
+    <link rel="stylesheet" href="./assets/fontawesome/fontawesome-free-7.1.0-web/css/solid.min.css">
+    <link rel="stylesheet" href="./assets/fontawesome/fontawesome-free-7.1.0-web/css/brands.min.css">
+    <link rel="stylesheet" href="./assets/fontawesome/fontawesome-free-7.1.0-web/css/regular.min.css">
     <title>EMPLOYE | NAVBAR</title>
 </head>
 
@@ -46,7 +49,9 @@ require_once "config.php";
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class=" modal-title fs-5 text-success" id="navModal">Admin Information</h1>
+                    <h1 class=" modal-title fs-5 text-success" id="navModal">
+                        <?php isset($_SESSION['admin_login']) ? print ('Admin') : print ('Employee') ?> Information
+                    </h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="dialog modal-body container">
@@ -125,9 +130,11 @@ require_once "config.php";
                                 </li>
                             </ul>
                         </div>
-                        <li class="nav-item mx-2">
-                            <a class="nav-link linkU" href="about.php" aria-current="page">Contact Us</a>
-                        </li>
+                        <?php if (isset($_SESSION['designation']) && $_SESSION['designation'] != 'superadmin') { ?>
+                            <li class="nav-item mx-2">
+                                <a class="nav-link linkU" href="contactUs.php" aria-current="page">Contact Us</a>
+                            </li>
+                        <?php } ?>
                     <?php } ?>
                 </ul>
                 <?php

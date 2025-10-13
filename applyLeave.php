@@ -26,7 +26,6 @@ require_once './assets/showMessage.php';
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <link rel="stylesheet" href=" https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <title>Apply Leave</title>
     <link rel="stylesheet" href="./css/leave.css">
     <link rel="stylesheet" href="./css/boot.css">
@@ -70,23 +69,42 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
         }
     }
-    if(isset($_POST['edit_leave_btn'])) {
+    if(isset($_GET['leaveStatus']) || isset($_GET['approve']) ){
+        if(isset($_POST['edit_leave_btn'])) {
+            $leaveID = $_POST['leaveID'];
+            $editLeaveType = $_POST['edit_leave_type'];
+            $editReason = $_POST['edit_reason'];
+            $editFromDate = $_POST['edit_from_date'];
+            $editToDate = $_POST['edit_to_date'];
 
-        $leaveID = $_POST['leaveID'];
-        $editLeaveType = $_POST['edit_leave_type'];
-        $editReason = $_POST['edit_reason'];
-        $editFromDate = $_POST['edit_from_date'];
-        $editToDate = $_POST['edit_to_date'];
-
-        if (strtotime($editFromDate) > strtotime($editToDate)) {
-            ShowError('Enter Valid Dates', 'Oops!');
-        } else {
-            // Update leave application in the database
-            $updateLeave = "UPDATE `_leave_application` SET `leave_type`='$editLeaveType',`reason`='$editReason',`from_date`='$editFromDate',`to_date`='$editToDate' WHERE `leave_id`='$leaveID' AND `applicant`='$applicant'";
-            if (mysqli_query($con, $updateLeave)) {
-                if (mysqli_affected_rows($con) > 0) {
-                    ShowSuccess('Leave application updated successfully', 'Success');
+            if (strtotime($editFromDate) > strtotime($editToDate)) {
+                ShowError('Enter Valid Dates', 'Oops!');
+            } else {
+                if(isset($_GET['approve'])){
+                    $getEmpLeave = "SELECT * FROM `_leave_application` WHERE `leave_id`='$leaveID'";                   
+                    $executeGet = mysqli_query($con,$getEmpLeave);
+                    $fetchLeave = mysqli_fetch_assoc($executeGet);
+                    $EmpApplicant = $fetchLeave['applicant'];
+                    $designation = $fetchLeave['designation']; 
+                    
+                    // update Employee and admins leave application by superadmin
+                    $updateLeave = "UPDATE `_leave_application` SET `leave_type`='$editLeaveType',`reason`='$editReason',`from_date`='$editFromDate',`to_date`='$editToDate',`updated_by`='$applicant' WHERE `leave_id`='$leaveID' AND `applicant`='$EmpApplicant' AND `designation`='$designation'";
+                } else {
+                    // Update own leave application in the database
+                    $updateLeave = "UPDATE `_leave_application` SET `leave_type`='$editLeaveType',`reason`='$editReason',`from_date`='$editFromDate',`to_date`='$editToDate' WHERE `leave_id`='$leaveID' AND `applicant`='$applicant'";
                 }
+
+                if (mysqli_query($con, $updateLeave)) {
+                    if (mysqli_affected_rows($con) > 0) {
+                        ShowSuccess('Leave application updated successfully', 'Success');
+                        ?>
+                            <script>
+                                window.location.reload();
+                            </script>
+                        <?php
+                    }
+                }
+
             }
         }
     }
@@ -97,15 +115,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <!-- //*  Edit Leave Modal -->
 
-    <div class="modal fade" id="editLeaveModal" aria-labelledby="editLeaveModal" aria-hidden="true">
+    <div class="modal fade" id="editLeaveModal" aria-labelledby="editLeaveModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class=" modal-title fs-5 text-success" id="editLeaveModal">Edit Leave</h1>
+                    <h1 class=" modal-title fs-5 text-success" id="editLeaveModalLabel">Edit Leave</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="dialog modal-body container">
-                    <form method="post" class="p-3 fw-semibold" action="applyLeave.php?leaveStatus=true">
+                    <form method="post" class="p-3 fw-semibold" id="editLeaveForm">
                         <input type="hidden" name="leaveID" id="leaveID">
 
                         <label for="edit_leave_type">Leave Type</label>
@@ -135,50 +153,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         </div>
 
                         <button type="submit" class="editLeaveBtn btn mt-4" name="edit_leave_btn">Edit Leave</button>
-                        <input type="reset" value="Clear" class="btn btn-sm btn-light btn-outline-secondary mt-4 mx-2">
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- //* Show Leave Modal -->
-    <div class="modal fade" id="showLeaveModal" aria-labelledby="showLeaveModal" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class=" modal-title fs-5 text-success" id="showLeaveModal">Show Leave</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="dialog modal-body container">
-                    <form method="post" class="p-3 fw-semibold" action="applyLeave.php?leaveStatus=true">
-                        <input type="hidden" name="leaveID" id="leaveID">
-
-                        <label for="show_leave_type">Leave Type</label>
-                        <select id="show_leave_type" name="show_leave_type" class="form-control">
-                            <option value="">Select Leave Type</option>
-                            <option value="Sick Leave">Sick Leave</option>
-                            <option value="Casual Leave">Casual Leave</option>
-                            <option value="Earned Leave">Earned Leave</option>
-                            <option value="Maternity Leave">Maternity Leave</option>
-                            <option value="Other">Other</option>
-                        </select>
-
-                        <label for="show_reason" class=" mt-3">Leave Reason</label>
-                        <textarea id="show_reason" name="show_reason" class="form-control" placeholder="Enter reason for leave" required></textarea>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label for="show_from_date" class="mt-3">From Date</label>
-                                <input type="date" id="show_from_date" class="form-control" name="show_from_date" max="<?php echo date('Y-m-d'); ?>"
-                                    required>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="show_to_date" class="mt-3">To Date</label>
-                                <input type="date" id="show_to_date" class="form-control" name="show_to_date" min="<?php echo date('Y-m-d'); ?>"
-                                    required>
-                            </div>
-                        </div>
+                        <input type="reset" value="Clear" class="btn btn-sm btn-light btn-outline-dark mt-4 mx-2">
                     </form>
                 </div>
             </div>
@@ -189,23 +164,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <?php
     if (isset($_GET['approve'])) {
         if ($_GET['approve']) {
-            if(isset($_GET['changeStatus']) && $_GET['changeStatus']){
+            if(isset($_GET['changeStatus']) && $_GET['changeStatus'] && isset($_GET['id']) && isset($_GET['status'])){
                 $leaveId = $_GET['id'];
                 $status = $_GET['status'] == 1 ? 2 : 1;
-                $updateStatus = "UPDATE `_leave_application` SET `status`='$status' WHERE `leave_id`='$leaveId'";
+                $updateStatus = "UPDATE `_leave_application` SET `status`='$status',`updated_by`='$applicant' WHERE `leave_id`='$leaveId'";
                 $executeUpdate = mysqli_query($con,$updateStatus);
                 if(mysqli_affected_rows($con) == 1){
                     ShowSuccess('Status Updated Successfully','Success');
                 }
             } else {
-                if (isset($_GET['status']) && $_GET['status'] && isset($_GET['id'])) {
-                    $leaveId = $_GET['id'] ?? null;
-                    $status = $_GET['status'] ?? 0;
-                    $updateLeave = "UPDATE `_leave_application` SET `status`='$status',`accepted_by`='$applicant' WHERE `leave_id`='$leaveId'";
-                    $executeUpdate = mysqli_query($con, $updateLeave);
+                if(isset($_GET['request']) && $_GET['request']){
+                    if (isset($_GET['status']) && $_GET['status'] && isset($_GET['id'])) {
+                        $leaveId = $_GET['id'] ?? null;
+                        $status = $_GET['status'] ?? 0;
+                        $updateLeave = "UPDATE `_leave_application` SET `status`='$status',`accepted_by`='$applicant' WHERE `leave_id`='$leaveId'";
+                        $executeUpdate = mysqli_query($con, $updateLeave);
 
-                    if (mysqli_affected_rows($con) > 0) {
-                        ShowSuccess('Leave application updated successfully', 'Success');
+                        if (mysqli_affected_rows($con) > 0) {
+                            ShowSuccess('Leave application updated successfully', 'Success');
+                        }
                     }
                 }
             }
@@ -269,16 +246,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                             <?php
                                             } else {
                                                 ?>
-                                                <a href="applyLeave.php?approve=true&id=<?= $row['leave_id'] ?>&status=1"
+                                                <a href="applyLeave.php?approve=true&id=<?= $row['leave_id'] ?>&status=1&request=true"
                                                     class="btn btn-light btn-sm btn-outline-success rounded-3">Accept</a>
-                                                <a href="applyLeave.php?approve=true&id=<?= $row['leave_id'] ?>&status=2"
+                                                <a href="applyLeave.php?approve=true&id=<?= $row['leave_id'] ?>&status=2&request=true"
                                                     class="btn btn-light btn-sm btn-outline-danger rounded-3">Reject</a>
                                                 </td>
                                             <?php
                                             }
                                             if($row['status'] > 0){
                                             ?>
-                                                <span class="text-secondary fs-5">|</span> <a class="btn btn-sm text-decoration-none btn-info text-white fw-bolder" title="Change Status" onclick="changeStatus(<?=$row['leave_id'];?>,<?= $row['status']?>)"><i class="fa fa-arrows-rotate"></i></a>
+                                                <span class="text-secondary fs-5">|</span> <a class="btn btn-sm text-decoration-none btn-info fw-bolder btn-changeStatus" title="Change Status" onclick="changeStatus(<?=$row['leave_id'];?>,<?= $row['status']?>)"><i class="fa fa-arrows-rotate"></i></a>
+                                                <button type="button" class="btn btn-sm text-decoration-none btn-info fw-bolder edit_emp_leave" data-leave-id="<?= htmlspecialchars($row['leave_id']) ?>" data-leave-type="<?= htmlspecialchars($row['leave_type']) ?>" data-reason="<?= htmlspecialchars($row['reason']) ?>" data-from="<?= htmlspecialchars($row['from_date']) ?>" data-to="<?= htmlspecialchars($row['to_date']) ?>" title="Edit Leave" data-bs-toggle="modal" data-bs-target="#editLeaveModal"><i class="fa fa-edit"></i></button>
                                             <?php
                                             }
                                     }
@@ -376,7 +354,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     <?php
                                     if ($fetchDetails['status'] == 0) {
                                         ?>
-                                        <button class="editLeave btn btn-sm rounded-3 px-3" id="<?= $fetchDetails['leave_id'] ?>">
+                                        <button type="button" class="btn btn-sm rounded-3 px-3 edit_leave edit_emp_leave" data-leave-id="<?= htmlspecialchars($fetchDetails['leave_id']) ?>" data-leave-type="<?= htmlspecialchars($fetchDetails['leave_type']) ?>" data-reason="<?= htmlspecialchars($fetchDetails['reason']) ?>" data-from="<?= htmlspecialchars($fetchDetails['from_date']) ?>" data-to="<?= htmlspecialchars($fetchDetails['to_date']) ?>" title="Edit Leave" data-bs-toggle="modal" data-bs-target="#editLeaveModal">
                                             Edit
                                         </button>
                                         <a href="applyLeave.php?leaveStatus=true&delete=true&leave_id=<?= $fetchDetails['leave_id']; ?>"
@@ -427,7 +405,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <div class="row">
                             <div class="col-md-6">
                                 <label for="from_date">From Date</label>
-                                <input type="date" id="from_date" name="from_date" min="<?php echo date('Y-m-d'); ?>" required>
+                                <input type="date" id="from_date" name="from_date" max="<?php echo date('Y-m-d'); ?>" required>
                             </div>
                             <div class="col-md-6">
                                 <label for="to_date">To Date</label>
@@ -435,7 +413,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             </div>
                         </div>
 
-                        <button type="submit" class="btn mt-3" name="apply_leave_btn">Apply Leave</button>
+                        <button type="submit" class="btn mt-3 w-100" name="apply_leave_btn">Apply Leave</button>
                     </form>
                 </div>
             </div>
@@ -448,7 +426,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <script src="./js/bootstrap.bundle.min.js"></script>
     <script src="./js/dataTables.min.js"></script>
     <script src="./js/dataTables.bootstrap5.js"></script>
-    <script src="./js/script.js"></script>
     <script>
         new DataTable("#leaveApplication", {
             responsive: true,
@@ -458,35 +435,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             responsive: true,
         });
 
-        function changeStatus(leaveID, status) {
-            var newStatus = status == 1 ? 2 : 1;
-            $.ajax({
-                url: `applyLeave.php?approve=true&id=${leaveID}&changeStatus=true&status=${status}`,
-                method: "GET",
-                success: function(response) {
-                    var row = $(`a[onclick^="changeStatus(${leaveID},"]`).closest("tr");
-                    if (row.length) {
-                        var statusCell = row.find("td").eq(6);
-                        if (newStatus == 1) {
-                            statusCell.html(`<span class="badge bg-success p-2 rounded-3" style="font-size:13px;">Accepted</span> <span class="text-secondary fs-5">|</span> <a class="btn btn-sm text-decoration-none btn-info text-white fw-bolder" title="Change Status" onclick="changeStatus(${leaveID},${newStatus})"><i class="fa fa-arrows-rotate"></i></a>`);
-                        } else if (newStatus == 2) {
-                            statusCell.html(`<span class="badge bg-danger p-2 rounded-3" style="font-size:13px;">Rejected</span> <span class="text-secondary fs-5">|</span> <a class="btn btn-sm text-decoration-none btn-info text-white fw-bolder" title="Change Status" onclick="changeStatus(${leaveID},${newStatus})"><i class="fa fa-arrows-rotate"></i></a>`);
-                        }
-                        var actionsCell = row.find("td").eq(7);
-                        actionsCell.html(
-                            `<a class="btn btn-sm text-decoration-none btn-info text-white fw-bolder" title="Change Status" onclick="changeStatus(${leaveID},${newStatus})"><i class="fa fa-arrows-rotate"></i></a>`
-                        );
-                    }
-                    if (typeof toastr !== "undefined") {
-                        toastr.success("Status updated successfully","Success");
-                    }
-                },
-                error: function(xhr, status, error) {
-                    alert("Failed to change status. Please try again.");
-                }
-            });
-        }
+        
     </script>
+    <script src="./js/script.js"></script>
 </body>
 
 </html>

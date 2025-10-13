@@ -1,67 +1,80 @@
+:root {
+  --primary: #7e22ce;
+  --accent1: #c850c0;
+  --accent2: #4158d0;
+  --bg: #fafaff;
+  --border: #e0e0e0;
+  --text: #333;
+  --shadow: rgba(126, 34, 206, 0.08);
+}
+
+/* Container */
 .apply-leave .container {
   max-width: 450px;
   margin: 40px auto;
   background: #fff;
   border-radius: 12px;
-  box-shadow: 0 4px 24px rgba(126, 34, 206, 0.08);
+  box-shadow: 0 4px 24px var(--shadow);
   padding: 32px 28px;
 }
 
+/* Headings / labels */
 .apply-leave h2 {
-  color: #7e22ce;
+  color: var(--primary);
   text-align: center;
   margin-bottom: 24px;
   font-weight: 600;
 }
-
 .apply-leave label {
   display: block;
   margin-bottom: 8px;
-  color: #7e22ce;
+  color: var(--primary);
   font-weight: 500;
 }
 
-.apply-leave select,
-.apply-leave input[type="date"],
-.apply-leave textarea {
+/* Form controls (grouped) */
+.apply-leave :is(select, textarea, input[type="date"]) {
   width: 100%;
   padding: 10px 12px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--border);
   border-radius: 6px;
   margin-bottom: 18px;
   font-size: 15px;
-  background: #fafaff;
-  color: #333;
+  background: var(--bg);
+  color: var(--text);
   transition: border-color 0.2s;
 }
-
-.apply-leave select:focus,
-.apply-leave input:focus,
-.apply-leave textarea:focus {
-  border-color: #7e22ce;
+.apply-leave :is(select, textarea, input[type="date"]):focus {
+  border-color: var(--primary);
   outline: none;
 }
 
+/* Textarea tweaks */
 .apply-leave textarea {
   resize: vertical;
   min-height: 60px;
   max-height: 140px;
 }
 
-.apply-leave .btn {
-  width: 100%;
-  padding: 8px 20px 8px 20px;
+/* Button-like elements (shared styles) */
+.apply-leave .btn,
+#leaveApplication .btn-changeStatus,
+#leaveApplication .edit_emp_leave,
+#leaveStatus .edit_leave {
   cursor: pointer;
   transition: all 0.3s ease;
   background-color: #ffffff;
   font-size: 15px;
-  border: 0.5px solid #4158d0;
+  border: 0.5px solid var(--accent2);
   font-weight: 500;
 }
 
-.apply-leave .btn:hover{
-  background: linear-gradient(-205deg, #c850c0, #4158d0);
+/* Hover state for all button-like elements */
+.apply-leave .btn:hover,
+#leaveApplication .btn-changeStatus:hover,
+#leaveApplication .edit_emp_leave:hover,
+#leaveStatus .edit_leave:hover {
+  background: linear-gradient(-205deg, var(--accent1), var(--accent2));
   color: whitesmoke;
   transform: scale(0.98);
 }
-

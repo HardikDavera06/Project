@@ -27,13 +27,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
    $coN = $_POST['contact'];
    $role = $_POST['role'];
 
-   // //* <--- Check Admin Already Registered Or Not--> 
-   // $selectQuery = "SELECT * FROM _admin_regi where `name`= '$aname' OR `contact`='$coN' OR `email`='$Email'";
-   // $run = mysqli_query($con, $selectQuery);
-   // $NumExistscheck = mysqli_num_rows($run);
-   // if ($NumExistscheck == 1) {
-   //    ShowError('Admin Already Existed', 'OOPS!');
-   // } else {
    // * <--- Insert New Admin -->
    if ($pwd == $rpwd) {
       $Hashpwd = password_hash($pwd, PASSWORD_DEFAULT);

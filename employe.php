@@ -38,12 +38,13 @@ $upN = false;
       $updated_password = $_POST['forgetPassword'];
       $confirm_pswd = $_POST['confirmPassword'];
       $getTable = ($department == "Administration") ? "_admin_regi" : "_emp_regi";
-
       if ($updated_password == $confirm_pswd) {
-
+        
         $passwordExistence = "SELECT * FROM `$getTable` WHERE `id`='$id'";
         $executeExistence = mysqli_query($con, $passwordExistence);
         $column = mysqli_fetch_assoc($executeExistence);
+        print_r($passwordExistence);
+        exit;
 
         if (password_verify($updated_password, $column['password'])) { //* Check exitence of password into db's table
           ShowError('Please Try Another Password', 'Sorry!');

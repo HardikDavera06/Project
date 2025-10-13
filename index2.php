@@ -13,9 +13,10 @@ require_once "./assets/showMessage.php";
    <meta http-equiv="Pragma" content="no-cache">
    <meta http-equiv="Expires" content="0">
    <link rel="stylesheet" href="./css/boot.css">
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
-      crossorigin="anonymous" referrerpolicy="no-referrer" />
+   <link rel="stylesheet" href="./assets/fontawesome/fontawesome-free-7.1.0-web/css/all.css">
+   <link rel="stylesheet" href="./assets/fontawesome/fontawesome-free-7.1.0-web/css/solid.min.css">
+   <link rel="stylesheet" href="./assets/fontawesome/fontawesome-free-7.1.0-web/css/brands.min.css">
+   <link rel="stylesheet" href="./assets/fontawesome/fontawesome-free-7.1.0-web/css/regular.min.css">
    <script src="./js/jquery.min.js"></script>
    <script src="./js/toastr.min.js"></script>
    <title>EMPLOYE | HOME</title>
