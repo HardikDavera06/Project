@@ -13,6 +13,7 @@ require_once "./assets/showMessage.php";
    <meta http-equiv="Pragma" content="no-cache">
    <meta http-equiv="Expires" content="0">
    <link rel="stylesheet" href="./css/boot.css">
+   <link rel="stylesheet" href="./css/footer.css">
    <link rel="stylesheet" href="./assets/fontawesome/fontawesome-free-7.1.0-web/css/all.css">
    <link rel="stylesheet" href="./assets/fontawesome/fontawesome-free-7.1.0-web/css/solid.min.css">
    <link rel="stylesheet" href="./assets/fontawesome/fontawesome-free-7.1.0-web/css/brands.min.css">

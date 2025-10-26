@@ -4,16 +4,35 @@ $applicant = '';
 $designation = '';
 $department = '';
 if (isset($_SESSION['designation']) || isset($_SESSION['department'])) {
-    $designation = $_SESSION['designation'];
-    $department = $_SESSION['department'];
+    $designation = htmlspecialchars($_SESSION['designation']);
+    $department = htmlspecialchars($_SESSION['department']);
 }
 if (isset($_SESSION['admin_name'])) {
-    $applicant = $_SESSION['admin_name'];
+    $applicant = htmlspecialchars($_SESSION['admin_name']);
 } elseif (isset($_SESSION['emp_name'])) {
-    $applicant = $_SESSION['emp_name'];
+    $applicant = htmlspecialchars($_SESSION['emp_name']);
 } else {
     header("Location:index2.php");
 }
+require_once 'config.php';
+
+// Handle AJAX changeStatus request BEFORE any HTML output
+if(isset($_GET['changeStatus']) && $_GET['changeStatus'] && isset($_GET['approve']) && $_GET['approve'] && isset($_GET['id']) && isset($_GET['changedStatus'])){
+    $leaveId = mysqli_real_escape_string($con, $_GET['id']);
+    $status = mysqli_real_escape_string($con, $_GET['changedStatus']);
+    $updateStatus = "UPDATE `_leave_application` SET `status`='$status',`updated_by`='$applicant' WHERE `leave_id`='$leaveId'";
+    $executeUpdate = mysqli_query($con,$updateStatus);
+    if(mysqli_affected_rows($con) > 0){
+        header('Content-Type: application/json');
+        echo json_encode(['success' => true, 'message' => 'Status Updated Successfully']);
+        exit;
+    } else {
+        header('Content-Type: application/json');
+        echo json_encode(['success' => false, 'message' => 'Failed to update status']);
+        exit;
+    }
+}
+
 require_once "nav.php";
 require_once 'config.php';
 require_once './assets/showMessage.php';
@@ -54,8 +73,8 @@ require_once './assets/showMessage.php';
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['apply_leave_btn'])) {
 
-        $leaveType = $_POST['leave_type'];
-        $reason = $_POST['reason'];
+        $leaveType = mysqli_real_escape_string($con,$_POST['leave_type']);
+        $reason = mysqli_real_escape_string($con,$_POST['reason']);
         $fromDate = $_POST['from_date'];
         $toDate = $_POST['to_date'];
 
@@ -72,8 +91,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if(isset($_GET['leaveStatus']) || isset($_GET['approve']) ){
         if(isset($_POST['edit_leave_btn'])) {
             $leaveID = $_POST['leaveID'];
-            $editLeaveType = $_POST['edit_leave_type'];
-            $editReason = $_POST['edit_reason'];
+            $editLeaveType = mysqli_real_escape_string($con,$_POST['edit_leave_type']);
+            $editReason = mysqli_real_escape_string($con,$_POST['edit_reason']);
             $editFromDate = $_POST['edit_from_date'];
             $editToDate = $_POST['edit_to_date'];
 
@@ -164,26 +183,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <?php
     if (isset($_GET['approve'])) {
         if ($_GET['approve']) {
-            if(isset($_GET['changeStatus']) && $_GET['changeStatus'] && isset($_GET['id']) && isset($_GET['status'])){
-                $leaveId = $_GET['id'];
-                $status = $_GET['status'] == 1 ? 2 : 1;
-                $updateStatus = "UPDATE `_leave_application` SET `status`='$status',`updated_by`='$applicant' WHERE `leave_id`='$leaveId'";
-                $executeUpdate = mysqli_query($con,$updateStatus);
-                if(mysqli_affected_rows($con) == 1){
-                    ShowSuccess('Status Updated Successfully','Success');
-                }
-            } else {
-                if(isset($_GET['request']) && $_GET['request']){
-                    if (isset($_GET['status']) && $_GET['status'] && isset($_GET['id'])) {
-                        $leaveId = $_GET['id'] ?? null;
-                        $status = $_GET['status'] ?? 0;
-                        $updateLeave = "UPDATE `_leave_application` SET `status`='$status',`accepted_by`='$applicant' WHERE `leave_id`='$leaveId'";
-                        $executeUpdate = mysqli_query($con, $updateLeave);
+            // Handle regular request (not changeStatus)
+            if(isset($_GET['request']) && $_GET['request'] && (isset($_GET['status']) && isset($_GET['id']))){
+                $leaveId = mysqli_real_escape_string($con, $_GET['id']);
+                $status = mysqli_real_escape_string($con, $_GET['status']);
+                $updateLeave = "UPDATE `_leave_application` SET `status`='$status',`accepted_by`='$applicant' WHERE `leave_id`='$leaveId'";
+                $executeUpdate = mysqli_query($con, $updateLeave);
 
-                        if (mysqli_affected_rows($con) > 0) {
-                            ShowSuccess('Leave application updated successfully', 'Success');
-                        }
-                    }
+                if (mysqli_affected_rows($con) > 0) {
+                    ShowSuccess('Leave application updated successfully', 'Success');
+                    // Redirect to clear the URL parameters and prevent re-execution on refresh
+                    echo '<script>setTimeout(function(){ window.location.href = "applyLeave.php?approve=true"; }, 100);</script>';
+                    exit;
                 }
             }
 
@@ -193,7 +204,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 if ($designation == "superadmin") {
                     $getLeaves = "SELECT * FROM `_leave_application` WHERE `designation` != 'superadmin' ORDER BY `leave_id` DESC";
                 } else {
-                    $getLeaves = "SELECT * FROM `_leave_application` l JOIN `_emp_regi` e ON e.`created_by` = '$applicant' WHERE l.`applicant` = e.`Ename` AND l.`designation` != 'superadmin'";
+                    $getLeaves = "SELECT * FROM `_leave_application` l JOIN `_emp_regi` e ON e.`created_by` = (SELECT id FROM `_admin_regi` WHERE `name`='$applicant') WHERE l.`applicant` = e.`Ename` AND l.`designation` != 'superadmin'";
                 }
                 $execute = mysqli_query($con, $getLeaves);
                 ?>
@@ -224,9 +235,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 ?>
                                 <tr>
                                     <td><?= $no; ?></td>
-                                    <td><?= $row['applicant'] ?></td>
-                                    <td><?= $row['leave_type'] ?></td>
-                                    <td><?= $row['reason'] ?></td>
+                                    <td><?= htmlspecialchars($row['applicant'], ENT_QUOTES, 'UTF-8');?></td>
+                                    <td><?= htmlspecialchars($row['leave_type'], ENT_QUOTES, 'UTF-8');?></td>
+                                    <td><?=  htmlspecialchars($row['reason'], ENT_QUOTES, 'UTF-8');?></td>
                                     <td><?= $row['from_date'] ?></td>
                                     <td><?= $row['to_date'] ?></td>
                                     <?php
@@ -325,9 +336,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             ?>
                             <tr>
                                 <td><?= $count; ?></td>
-                                <td><?= $fetchDetails['applicant'] ?></td>
-                                <td><?= $fetchDetails['leave_type'] ?></td>
-                                <td><?= $fetchDetails['reason'] ?></td>
+                                <td><?= htmlspecialchars($fetchDetails['applicant'], ENT_QUOTES, 'UTF-8'); ?></td>
+                                <td><?= htmlspecialchars($fetchDetails['leave_type'], ENT_QUOTES, 'UTF-8'); ?></td>
+                                <td><?= htmlspecialchars($fetchDetails['reason'], ENT_QUOTES, 'UTF-8'); ?></td>
                                 <td><?= $fetchDetails['from_date'] ?></td>
                                 <td><?= $fetchDetails['to_date'] ?></td>
                                 <td>

@@ -9,6 +9,7 @@
     <meta http-equiv="Expires" content="0">
     <title>EMPLOYE | REGISTRATION</title>
     <link rel="stylesheet" href="./css/employe.css">
+    <link rel="stylesheet" href="./css/footer.css">
     <script src="./js/jquery.min.js"></script>
     <script src="./js/toastr.min.js"></script>
 </head>
@@ -55,9 +56,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         } else { //* <------ INSERT NEW EMPLOYES ------>
                             $Hashpwd = password_hash($password, PASSWORD_DEFAULT);
                             if ($depart == "Administration") {
-                                $insert = "INSERT INTO `_admin_regi` (`name`,`password`,`Jdate`,`dob`,`package`,`contact`,`email`,`dep`,`designation`,`created_by`) VALUES ('$eName','$Hashpwd','$Jdate','$dateOfBirth','$package','$empContact','$empEmail','$depart','$designation','$created_by') ";
+                                $insert = "INSERT INTO `_admin_regi` (`name`,`password`,`Jdate`,`dob`,`package`,`contact`,`email`,`dep`,`designation`,`created_by`) VALUES ('$eName','$Hashpwd','$Jdate','$dateOfBirth','$package','$empContact','$empEmail','$depart','$designation',(SELECT id FROM `_admin_regi` WHERE `name`='$created_by' LIMIT 1)) ";
                             } else {
-                                $insert = "INSERT INTO `_emp_regi`(`Ename`, `contact`, `email`, `DOB`, `password`, `Jdate`, `dep`,`package`,`created_by`,`designation`) VALUES ('$eName','$empContact','$empEmail','$dateOfBirth','$Hashpwd','$Jdate','$depart','$package','$created_by','$designation')";
+                                $insert = "INSERT INTO `_emp_regi`(`Ename`, `contact`, `email`, `DOB`, `password`, `Jdate`, `dep`,`package`,`created_by`,`designation`) VALUES ('$eName','$empContact','$empEmail','$dateOfBirth','$Hashpwd','$Jdate','$depart','$package',(SELECT id FROM `_admin_regi` WHERE `name`='$created_by' LIMIT 1),'$designation')";
                             }
                             $Run = mysqli_query($con, $insert);
                             $inN = true;

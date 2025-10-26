@@ -2,7 +2,7 @@
 session_start();
 $created_by = '';
 if (isset($_SESSION['admin_name']) || isset($_SESSION['designation'])) {
-  $created_by = $_SESSION['admin_name'];
+  $creator = $_SESSION['admin_name'];
   $designationFromLogin = $_SESSION['designation'];
 } else {
   header("Location:index2.php");
@@ -31,6 +31,11 @@ $upN = false;
 
 <body>
   <?php
+  $getPrimaryID = "SELECT id FROM `_admin_regi` WHERE `name`='$creator' LIMIT 1";
+  $executeCreatedBy = mysqli_query($con, $getPrimaryID);
+  $created_by_row = mysqli_fetch_assoc($executeCreatedBy);
+  $created_by = $created_by_row['id'];
+
   if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['updatePasswordBtn'])) { //* <-- Script for update password -->
       $id = $_POST['passwordID'];
@@ -39,12 +44,10 @@ $upN = false;
       $confirm_pswd = $_POST['confirmPassword'];
       $getTable = ($department == "Administration") ? "_admin_regi" : "_emp_regi";
       if ($updated_password == $confirm_pswd) {
-        
-        $passwordExistence = "SELECT * FROM `$getTable` WHERE `id`='$id'";
+
+        $passwordExistence = "SELECT * FROM `$getTable` WHERE `$getTable`.`id`='$id'";
         $executeExistence = mysqli_query($con, $passwordExistence);
         $column = mysqli_fetch_assoc($executeExistence);
-        print_r($passwordExistence);
-        exit;
 
         if (password_verify($updated_password, $column['password'])) { //* Check exitence of password into db's table
           ShowError('Please Try Another Password', 'Sorry!');
@@ -70,6 +73,7 @@ $upN = false;
       $age = $diff->y;   // Gets the year difference (i.e., the age)
   
       if ($age >= 18) {
+
         $sno = $_POST['sno'];
         $Name = $_POST['unm1'];
         $depa = $_POST['dep1'];
@@ -77,36 +81,136 @@ $upN = false;
         $designation1 = $_POST['designation1'];
         $empContact1 = $_POST['empContact1'];
         $empEmail1 = $_POST['empEmail1'];
-
         $targetTable = ($depa == "Administration") ? "_admin_regi" : "_emp_regi";
         $deleteFromTable = ($depa == "Administration") ? "_emp_regi" : "_admin_regi";
         $nameField = ($depa == "Administration") ? "name" : "Ename";
 
-        if (isset($_POST['delete'])) { //* <----- Script For Delete The Employee ------->
+        if (isset($_POST['delete'])) {
+          // * Delete Employee
           $delete = "DELETE FROM `$targetTable` WHERE id = '$sno'";
           $RUn = mysqli_query($con, $delete);
-          if ($RUn)
-            $Del = true;
-          if ($Del == true) {
-            ShowSuccess('Employe Deleted successfully', 'Admin!');
+          if ($RUn) {
+            ShowSuccess('Employee Deleted successfully', 'Admin!');
           }
+
         } else {
-          if (isset($_POST['updateBtn'])) { //* <----- Script For Update The Employee -------> 
-            $checkExistence = "SELECT * FROM `$targetTable` WHERE `id`='$sno'";
-            $executeExistenceCheck = mysqli_query($con, $checkExistence);
-            if (mysqli_num_rows($executeExistenceCheck) > 0) {
-              $updateEmployee = "UPDATE `$targetTable` SET `$nameField` = '$Name',`Jdate` = '$date', `dob`='$dateOfBirth1',`package` = '$pac',`contact`='$empContact1', `email`='$empEmail1',`designation`='$designation1',`updated_by`='$created_by' WHERE `$targetTable`.`id` = '$sno'";
-              $updateExecute = mysqli_query($con, $updateEmployee);
-            } else {
-              $Hashpwd = password_hash('NEXGEN@123', PASSWORD_DEFAULT);
-              $insertNew = "INSERT INTO `$targetTable` (`$nameField`,`password`,`Jdate`,`dob` ,`package`,`contact`,`email`,`dep`,`designation`,`created_by`) VALUES ('$Name','$Hashpwd','$date','$dateOfBirth1','$pac','$empContact1','$empEmail1','$depa','$designation1','$created_by') ";
-              $insertExecute = mysqli_query($con, $insertNew);
-              if (mysqli_affected_rows($con) == 1) {
-                $deleteFromAnother = "DELETE FROM `$deleteFromTable` WHERE `id` = '$sno'";
-                $deleteExecute = mysqli_query($con, $deleteFromAnother);
-              }
+          if (isset($_POST['updateBtn'])) {
+
+            // * Get current email from DB to check if email changed
+            $getCurrentEmpEmailQuery = "SELECT * FROM `$targetTable` WHERE `$targetTable`.`id` = '$sno'";
+            $getCurrentAdminEmailQuery = "SELECT * FROM `$deleteFromTable` WHERE `$deleteFromTable`.`id` = '$sno'";
+
+            $getCurrentEmpEmailResult = mysqli_query($con, $getCurrentEmpEmailQuery);
+            $getCurrentAdminEmailResult = mysqli_query($con, $getCurrentAdminEmailQuery);
+
+            $finalResult = $depa == "Administration" ? mysqli_fetch_assoc($getCurrentAdminEmailResult) ?? mysqli_fetch_assoc($getCurrentEmpEmailResult) : mysqli_fetch_assoc($getCurrentEmpEmailResult) ?? mysqli_fetch_assoc($getCurrentAdminEmailResult);
+
+            $currentEmailData = $finalResult;
+            $currentEmail = '';
+
+            if (isset($currentEmailData)) {
+              $currentEmail = $currentEmailData['email'];
             }
-            ShowSuccess('Employee Updated', 'Successfully!');
+
+            // * Check if email was actually changed
+            if (isset($currentEmailData) && isset($currentEmail) && ($empEmail1 != $currentEmail)) {
+
+              //* Check if new email already exists in either table
+              $validateEmp = "SELECT * FROM `$targetTable` WHERE `$targetTable`.`email` = '$empEmail1'";
+              $validateAdmin = "SELECT * FROM `$deleteFromTable` WHERE `$deleteFromTable`.`email` = '$empEmail1'";
+
+              $validateEmpExecute = mysqli_query($con, $validateEmp);
+              $validateAdminExecute = mysqli_query($con, $validateAdmin);
+
+              if (mysqli_num_rows($validateEmpExecute) > 0 || mysqli_num_rows($validateAdminExecute) > 0) {
+
+                //* Email exists → show error toast
+                ShowError('Use Another Email Address', 'Email Already Exists!');
+              } else {
+
+                // * Now proceed for update (email is either unchanged or unique)
+                $checkExistence = "SELECT * FROM `$targetTable` WHERE `$targetTable`.`id`='$sno'";
+                $executeExistenceCheck = mysqli_query($con, $checkExistence);
+
+                if (mysqli_num_rows($executeExistenceCheck) > 0) {
+
+                  //* Update existing employee
+                  $updateEmployee = "
+                    UPDATE `$targetTable`
+                    SET `$nameField` = '$Name',
+                        `dep` = '$depa',
+                        `Jdate` = '$date',
+                        `dob` = '$dateOfBirth1',
+                        `package` = '$pac',
+                        `contact` = '$empContact1',
+                        `email` = '$empEmail1',
+                        `designation` = '$designation1',
+                        `updated_by` = '$created_by'
+                    WHERE `$targetTable`.`id` = '$sno'
+                  ";
+                  mysqli_query($con, $updateEmployee);
+
+                } else {
+
+                  //* Insert new employee
+                  $Hashpwd = password_hash('NEXGEN@123', PASSWORD_DEFAULT);
+                  $insertNew = "
+                    INSERT INTO `$targetTable`
+                    (`$nameField`,`password`,`Jdate`,`dob`,`package`,`contact`,`email`,`dep`,`designation`,`created_by`)
+                    VALUES
+                    ('$Name','$Hashpwd','$date','$dateOfBirth1','$pac','$empContact1','$empEmail1','$depa','$designation1','$created_by')
+                  ";
+                  $insertExecute = mysqli_query($con, $insertNew);
+
+                  if (mysqli_affected_rows($con) == 1) {
+                    $deleteFromAnother = "DELETE FROM `$deleteFromTable` WHERE id = '$sno'";
+                    mysqli_query($con, $deleteFromAnother);
+                  }
+                }
+
+                ShowSuccess('Employee Updated', 'Successfully');
+              }
+            } else {
+              // * Now proceed for update (email is either unchanged or unique)
+              $checkExistence = "SELECT * FROM `$targetTable` WHERE `$targetTable`.`id` ='$sno'";
+              $executeExistenceCheck = mysqli_query($con, $checkExistence);
+
+              if (mysqli_num_rows($executeExistenceCheck) > 0) {
+                // Update existing employee
+                $updateEmployee = "
+                  UPDATE `$targetTable`
+                  SET `$nameField` = '$Name',
+                      `dep` = '$depa',
+                      `Jdate` = '$date',
+                      `dob` = '$dateOfBirth1',
+                      `package` = '$pac',
+                      `contact` = '$empContact1',
+                      `email` = '$empEmail1',
+                      `designation` = '$designation1',
+                      `updated_by` = '$created_by'
+                  WHERE `$targetTable`.`id` = '$sno'
+                ";
+                mysqli_query($con, $updateEmployee);
+
+              } else {
+                // Insert new employee
+                $Hashpwd = password_hash('NEXGEN@123', PASSWORD_DEFAULT);
+                $insertNew = "
+                INSERT INTO `$targetTable`
+                (`$nameField`,`password`,`Jdate`,`dob`,`package`,`contact`,`email`,`dep`,`designation`,`created_by`)
+                VALUES
+                ('$Name','$Hashpwd','$date','$dateOfBirth1','$pac','$empContact1','$empEmail1','$depa','$designation1','$created_by')
+              ";
+                $insertExecute = mysqli_query($con, $insertNew);
+
+                if (mysqli_affected_rows($con) == 1) {
+                  $deleteFromAnother = "DELETE FROM `$deleteFromTable` WHERE `$deleteFromTable`.`id` = '$sno'";
+                  mysqli_query($con, $deleteFromAnother);
+                }
+              }
+
+              ShowSuccess('Employee Updated', 'Successfully');
+            }
           }
         }
       } else {
@@ -155,7 +259,7 @@ $upN = false;
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class=" modal-title fs-5 text-success" id="EDITmodal">Employe Information</h1>
+          <h1 class=" modal-title fs-5 text-success" id="">Employe Information</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="dialog modal-body container">
@@ -204,7 +308,7 @@ $upN = false;
                   <option value="Marketing">Marketing</option>
                   <option value="Sales">Sales</option>
                   <option value="Product">Product</option>
-                  <option value="Human_Resource">Human Resource</option>
+                  <option value="Human Resource">Human Resource</option>
                 </select>
               </div>
               <div class="col-md-6">
@@ -291,12 +395,14 @@ $upN = false;
             <td class="text-center">
               <div class="row m-2">
                 <div class="col-md-6">
-                  <button class="editData btn btn-sm" id="<?php echo $row['id']; ?>" title="Edit Information"><i
-                      class="fa fa-edit"></i></button>
+                  <button class="editData btn btn-sm" id="<?= htmlspecialchars($row["id"]); ?>"
+                    title="Edit Information">
+                    <i id="<?= htmlspecialchars($row["id"]); ?>" class="fa fa-edit"></i></button>
                 </div>
                 <div class="col-md-6">
                   <button class="forgetPassword btn btn-sm" style="transform:rotate(90deg);"
-                    id="<?php echo $row['id']; ?>" title="Forget Password"><i class="fa fa-sliders"></i></button>
+                    id="<?= htmlspecialchars($row["id"]); ?>" title="Forget Password"><i class="fa fa-sliders"
+                      id="<?= htmlspecialchars($row["id"]); ?>"></i></button>
                 </div>
               </div>
             </td>

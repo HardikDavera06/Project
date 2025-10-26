@@ -25,71 +25,81 @@ validateNumber(editPackageValidation);
 validateNumber(editContactValidation);
 
 //* <---- Edit feature ------> */
-edits = document.getElementsByClassName("editData");
 editLeave = document.querySelectorAll(".editLeave");
 editEmpLeave = document.querySelectorAll(".edit_emp_leave");
 
 function changeStatus(leaveID, status) {
   var newStatus = status == 1 ? 2 : 1;
   $.ajax({
-    url: `applyLeave.php?approve=true&id=${leaveID}&changeStatus=true&status=${status}`,
+    url: `applyLeave.php?approve=true&id=${leaveID}&changeStatus=true&changedStatus=${newStatus}`,
     method: "GET",
+    dataType: "json",
     success: function (response) {
-      var row = $(`a[onclick^="changeStatus(${leaveID},"]`).closest("tr");
-      if (!row.length) row = $(`#${leaveID}`).closest("tr");
-      if (!row.length) row = $(`[data-leave-id="${leaveID}"]`).closest("tr");
-
-      if (row.length) {
-        var cols = row.find("td");
-        // columns in table: 0:serial,1:applicant,2:leave_type,3:reason,4:from,5:to,6:status,7:actions (maybe)
-        var leaveType = cols.eq(2).text().trim();
-        var reason = cols.eq(3).text().trim();
-        var fromDate = cols.eq(4).text().trim();
-        var toDate = cols.eq(5).text().trim();
-
-        function esc(s) {
-          return String(s || "")
-            .replace(/&/g, "&amp;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#39;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;");
+      if (response.success) {
+        if (typeof toastr !== "undefined") {
+          toastr.success(response.message, "Success");
         }
 
-        var statusBadge =
-          newStatus == 1
-            ? `<span class="badge bg-success p-2 rounded-3" style="font-size:13px;">Accepted</span>`
-            : `<span class="badge bg-danger p-2 rounded-3" style="font-size:13px;">Rejected</span>`;
+        // Update the UI dynamically without reloading
+        var row = $(`a[onclick^="changeStatus(${leaveID},"]`).closest("tr");
+        if (!row.length) row = $(`[data-leave-id="${leaveID}"]`).closest("tr");
 
-        var changeBtn = `<a class="btn btn-sm text-decoration-none btn-info text-white fw-bolder" title="Change Status" onclick="changeStatus(${leaveID},${newStatus})"><i class="fa fa-arrows-rotate"></i></a>`;
+        if (row.length) {
+          var cols = row.find("td");
+          // columns in table: 0:serial,1:applicant,2:leave_type,3:reason,4:from,5:to,6:status
+          var leaveType = cols.eq(2).text().trim();
+          var reason = cols.eq(3).text().trim();
+          var fromDate = cols.eq(4).text().trim();
+          var toDate = cols.eq(5).text().trim();
 
-        var editBtn = `<button type="button" class="btn btn-sm text-decoration-none btn-info fw-bolder edit_emp_leave" data-leave-id="${esc(
-          leaveID
-        )}" data-leave-type="${esc(leaveType)}" data-reason="${esc(
-          reason
-        )}" data-from="${esc(fromDate)}" data-to="${esc(
-          toDate
-        )}" title="Edit Leave" data-bs-toggle="modal" data-bs-target="#editLeaveModal"><i class="fa fa-edit"></i></button>`;
+          function esc(s) {
+            return String(s || "")
+              .replace(/&/g, "&amp;")
+              .replace(/"/g, "&quot;")
+              .replace(/'/g, "&#39;")
+              .replace(/</g, "&lt;")
+              .replace(/>/g, "&gt;");
+          }
 
-        if (cols.eq(6).length) {
-          cols
-            .eq(6)
-            .html(
-              `${statusBadge} <span class="text-secondary fs-5">|</span> ${changeBtn} ${editBtn}`
-            );
+          var statusBadge =
+            newStatus == 1
+              ? `<span class="badge bg-success p-2 rounded-3" style="font-size:13px;">Accepted</span>`
+              : `<span class="badge bg-danger p-2 rounded-3" style="font-size:13px;">Rejected</span>`;
+
+          var changeBtn = `<a class="btn btn-sm text-decoration-none btn-info fw-bolder btn-changeStatus" title="Change Status" onclick="changeStatus(${leaveID},${newStatus})"><i class="fa fa-arrows-rotate"></i></a>`;
+
+          var editBtn = `<button type="button" class="btn btn-sm text-decoration-none btn-info fw-bolder edit_emp_leave" data-leave-id="${esc(
+            leaveID
+          )}" data-leave-type="${esc(leaveType)}" data-reason="${esc(
+            reason
+          )}" data-from="${esc(fromDate)}" data-to="${esc(
+            toDate
+          )}" title="Edit Leave" data-bs-toggle="modal" data-bs-target="#editLeaveModal"><i class="fa fa-edit"></i></button>`;
+
+          // Update the status column (6th column, index 6)
+          if (cols.eq(6).length) {
+            cols
+              .eq(6)
+              .html(
+                `${statusBadge} <span class="text-secondary fs-5">|</span> ${changeBtn} ${editBtn}`
+              );
+          }
         }
-
-        if (cols.eq(7).length) {
-          cols.eq(7).html(`${changeBtn} ${editBtn}`);
+      } else {
+        if (typeof toastr !== "undefined") {
+          toastr.error(response.message || "Failed to update status", "Error");
+        } else {
+          alert(response.message || "Failed to update status");
         }
-      }
-
-      if (typeof toastr !== "undefined") {
-        toastr.success("Status updated successfully", "Success");
       }
     },
     error: function (xhr, status, error) {
-      alert("Failed to change status. Please try again.");
+      // Handle JSON parse errors or other errors
+      if (typeof toastr !== "undefined") {
+        toastr.error("Failed to change status. Please try again.", "Error");
+      } else {
+        alert("Failed to change status. Please try again.");
+      }
     },
   });
 }
@@ -118,6 +128,7 @@ document.addEventListener("click", (e) => {
   setValue("edit_to_date", toDate);
 });
 
+var edits = document.getElementsByClassName("editData");
 Array.from(edits)?.forEach((e) => {
   e?.addEventListener("click", (y) => {
     const tr = y.target?.closest("tr");
@@ -142,6 +153,7 @@ Array.from(edits)?.forEach((e) => {
       package1.value = empPackages;
 
     const id = y.target?.id ?? "";
+
     if (typeof sno !== "undefined" && sno) sno.value = id;
     if (typeof editID !== "undefined" && editID) editID.value = id;
     if (empDesignation === "superadmin") {
@@ -155,9 +167,7 @@ Array.from(edits)?.forEach((e) => {
       empEmail1.value = empEmail;
 
     //* <---- toggle for open modal -----> */
-    if (typeof $ === "function" && $("#EDITmodal").length) {
-      $("#EDITmodal").modal("toggle");
-    }
+    $("#EDITmodal").modal("toggle");
   });
 });
 
@@ -171,6 +181,7 @@ Array.from(users)?.forEach((e) => {
 forgetPassword = document.getElementsByClassName("forgetPassword");
 Array.from(forgetPassword)?.forEach((e) => {
   e?.addEventListener("click", (h) => {
+    console.log(h.target.id);
     const tr = h.target?.closest("tr");
     const tds = tr?.getElementsByTagName("td") ?? [];
 

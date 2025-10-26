@@ -44,7 +44,7 @@ function getQuery($role, $created_by)
         dep,
         designation,
         created_by
-        FROM _admin_regi WHERE `dep`='Administration' AND `designation` != 'superadmin' AND `created_by`='$created_by'
+        FROM _admin_regi WHERE `dep`='Administration' AND `designation` != 'superadmin' AND `created_by`= '$created_by'
 
         UNION ALL
 
@@ -59,7 +59,7 @@ function getQuery($role, $created_by)
         dep,
         designation,
         created_by
-        FROM _emp_regi WHERE `created_by`='$created_by'
+        FROM _emp_regi WHERE `created_by`= '$created_by'
         ";
     }
     return $query;

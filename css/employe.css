@@ -5,7 +5,7 @@
   box-sizing: border-box;
   font-family: "Poppins", Arial, Helvetica, sans-serif;
   scroll-behavior: smooth;
-  user-select: none;
+  /* user-select: none; */
 }
 .container form .in {
   border: 0.1px solid dark;

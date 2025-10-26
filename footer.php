@@ -1,53 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./css/employe.css">
-    <link rel="stylesheet" href="./css/boot.css">
-    <link rel="stylesheet" href="./assets/fontawesome/fontawesome-free-7.1.0-web/css/all.css">
-    <link rel="stylesheet" href="./assets/fontawesome/fontawesome-free-7.1.0-web/css/solid.min.css">
-    <link rel="stylesheet" href="./assets/fontawesome/fontawesome-free-7.1.0-web/css/brands.min.css">
-    <link rel="stylesheet" href="./assets/fontawesome/fontawesome-free-7.1.0-web/css/regular.min.css">
-    <title>EMPLOYE | NAVBAR</title>
-    <style>
-        .title-ca {
-            color: #7e22ce;
-        }
-
-        .footer-b .icons a {
-            color: black;
-        }
-
-        .footer-b .icons i:hover {
-            color: #7e22ce;
-            transition: transform 3s ease;
-            transform: rotate(360deg);
-
-        }
-    </style>
-</head>
-
-<body>
-    <footer class="mb-4 container mt-5 rounded navbar navbar-expand-lg w-100">
-        <div class="footer-b container-fluid mt-5 ">
-            <a class="navbar-brand title-ca fw-semibold" href="index.php">NexGen</a>
-            <div class="collapse navbar-collapse" id="footerContent ">
-                <ul class="navbar-nav me-auto mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link ba" aria-current="page">| &nbsp; Copyrights &copy; 2024 NexGen.com</a>
-                    </li>
-                </ul>
-                <div class="icons ">
-                    <a href="index2.php"><i class="fa-solid fa-house fa-xl m-1"></i></a>
-                    <a href="https://www.linkedIn.com"><i class="fa-brands fa-xl fa-linkedin m-1"></i></a>
-                    <a href="https://www.instagram.com"><i class="fa-brands fa-instagram  fa-xl m-1"></i></a>
-                    <a href="https://www.facebook.com"><i class="fa-brands fa-facebook  fa-xl m-1 "></i></a>
-                </div>
-            </div>
+<!-- Footer Component -->
+<footer class="footer">
+    <div class="footer-content container">
+        <div class="brand-copyright">
+            <a class="title-ca fw-semibold" href="index2.php">NexGen</a>
+            <p class="copyright m-0">| &nbsp; Copyrights &copy; 2024 NexGen.com</p>
         </div>
-    </footer>
-</body>
-
-</html>
+        <div class="icons">
+            <a href="index2.php"><i class="fa-solid fa-house fa-xl"></i></a>
+            <a href="https://www.linkedIn.com"><i class="fa-brands fa-xl fa-linkedin"></i></a>
+            <a href="https://www.instagram.com"><i class="fa-brands fa-instagram fa-xl"></i></a>
+            <a href="https://www.facebook.com"><i class="fa-brands fa-facebook fa-xl"></i></a>
+        </div>
+    </div>
+</footer>
