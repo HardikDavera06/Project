@@ -36,14 +36,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $age = $diff->y;   // Gets the year difference (i.e., the age)
 
                 if ($age >= 18) {
-
-                    $eName = trim($_POST['unm']);
-                    $empContact = $_POST['empContact'];
-                    $empEmail = $_POST['empEmail'];
-                    $package = $_POST['package'];
+                    // Sanitize inputs using htmlspecialchars to prevent XSS
+                    $eName = htmlspecialchars(trim($_POST['unm']), ENT_QUOTES, 'UTF-8');
+                    $empContact = htmlspecialchars(trim($_POST['empContact']), ENT_QUOTES, 'UTF-8');
+                    $empEmail = htmlspecialchars(trim($_POST['empEmail']), ENT_QUOTES, 'UTF-8');
+                    $package = htmlspecialchars(trim($_POST['package']), ENT_QUOTES, 'UTF-8');
                     $password = $_POST['pwd'];
-                    $depart = $_POST['dep'];
-                    $designation = ucwords($_POST['designation']);
+                    $depart = htmlspecialchars(trim($_POST['dep']), ENT_QUOTES, 'UTF-8');
+                    $designation = htmlspecialchars(trim($_POST['designation']), ENT_QUOTES, 'UTF-8');
 
                     if ($Jdate != $dateOfBirth) {
                         $select = "SELECT email, contact  FROM _emp_regi WHERE email='$empEmail' OR contact='$empContact'

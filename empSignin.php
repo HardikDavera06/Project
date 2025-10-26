@@ -19,7 +19,8 @@ $ShowErr = true;
 
 <?php
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $userName = $_POST['Anm'];
+    // Sanitize inputs using htmlspecialchars to prevent XSS
+    $userName = htmlspecialchars(trim($_POST['Anm']), ENT_QUOTES, 'UTF-8');
     $pwd = $_POST['pwd'];
     $select = "SELECT * FROM `_emp_regi` WHERE `Ename`='$userName'";
     $RUN = mysqli_query($con, $select);

@@ -20,12 +20,13 @@ $signup = false;
 <?php
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-   $aname = trim($_POST['Anm']);
+   // Sanitize inputs using htmlspecialchars to prevent XSS
+   $aname = htmlspecialchars(trim($_POST['Anm']), ENT_QUOTES, 'UTF-8');
    $pwd = $_POST['pwd'];
    $rpwd = $_POST['Rpwd'];
-   $Email = $_POST['email'];
-   $coN = $_POST['contact'];
-   $role = $_POST['role'];
+   $Email = htmlspecialchars(trim($_POST['email']), ENT_QUOTES, 'UTF-8');
+   $coN = htmlspecialchars(trim($_POST['contact']), ENT_QUOTES, 'UTF-8');
+   $role = htmlspecialchars(trim($_POST['role']), ENT_QUOTES, 'UTF-8');
 
    // * <--- Insert New Admin -->
    if ($pwd == $rpwd) {

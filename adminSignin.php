@@ -18,7 +18,8 @@ $ShowErr = true;
 </head>
 <?php
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $userName = $_POST['Anm'];
+    // Sanitize inputs using htmlspecialchars to prevent XSS
+    $userName = htmlspecialchars(trim($_POST['Anm']), ENT_QUOTES, 'UTF-8');
     $pwd = $_POST['pwd'];
     $select = "SELECT * FROM `_admin_regi` WHERE `name`='$userName'";
     $RUN = mysqli_query($con, $select);

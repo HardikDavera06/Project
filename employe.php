@@ -38,8 +38,8 @@ $upN = false;
 
   if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['updatePasswordBtn'])) { //* <-- Script for update password -->
-      $id = $_POST['passwordID'];
-      $department = $_POST['department'];
+      $id = htmlspecialchars(trim($_POST['passwordID']), ENT_QUOTES, 'UTF-8');
+      $department = htmlspecialchars(trim($_POST['department']), ENT_QUOTES, 'UTF-8');
       $updated_password = $_POST['forgetPassword'];
       $confirm_pswd = $_POST['confirmPassword'];
       $getTable = ($department == "Administration") ? "_admin_regi" : "_emp_regi";
@@ -74,13 +74,13 @@ $upN = false;
   
       if ($age >= 18) {
 
-        $sno = $_POST['sno'];
-        $Name = $_POST['unm1'];
-        $depa = $_POST['dep1'];
-        $pac = $_POST['package1'];
-        $designation1 = $_POST['designation1'];
-        $empContact1 = $_POST['empContact1'];
-        $empEmail1 = $_POST['empEmail1'];
+        $sno = htmlspecialchars(trim($_POST['sno']), ENT_QUOTES, 'UTF-8');
+        $Name = htmlspecialchars(trim($_POST['unm1']), ENT_QUOTES, 'UTF-8');
+        $depa = htmlspecialchars(trim($_POST['dep1']), ENT_QUOTES, 'UTF-8');
+        $pac = htmlspecialchars(trim($_POST['package1']), ENT_QUOTES, 'UTF-8');
+        $designation1 = htmlspecialchars(trim($_POST['designation1']), ENT_QUOTES, 'UTF-8');
+        $empContact1 = htmlspecialchars(trim($_POST['empContact1']), ENT_QUOTES, 'UTF-8');
+        $empEmail1 = htmlspecialchars(trim($_POST['empEmail1']), ENT_QUOTES, 'UTF-8');
         $targetTable = ($depa == "Administration") ? "_admin_regi" : "_emp_regi";
         $deleteFromTable = ($depa == "Administration") ? "_emp_regi" : "_admin_regi";
         $nameField = ($depa == "Administration") ? "name" : "Ename";
