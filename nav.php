@@ -154,7 +154,7 @@ require_once "config.php";
                     ?>
                     <div class="login-register">
                         <a href="adminSignin.php" class="login-nav-btn btn">Admin Login</a>
-                        <a href="empSignin.php" class="regi-nav-btn btn ">Employe Login</a>
+                        <a href="empSignin.php" class="regi-nav-btn btn ">Employee Login</a>
                     </div>
                 <?php } ?>
             </div>
